@@ -1,13 +1,61 @@
-/* Variables CSS pour la charte graphique */
+@import "bootstrap/dist/css/bootstrap.min.css";
+
+/* Charte graphique Loire & Nature Conciergerie */
 :root {
   --color-vert-nature: #6E8C4B;
   --color-bleu-loire: #5D90B3;
   --color-rose: #D8CBB5;
   --color-gris-ardoise: #404040;
   --color-blanc-pur: #FFFFFF;
+  
+  /* Bootstrap custom colors */
+  --bs-primary: #6E8C4B;
+  --bs-secondary: #5D90B3;
+  --bs-info: #D8CBB5;
+  --bs-dark: #404040;
+  --bs-light: #FFFFFF;
 }
 
-/* Classes personnalisées pour les couleurs */
+html,
+body {
+  background-color: var(--color-blanc-pur);
+  color: var(--color-gris-ardoise);
+  font-family: "Inter", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+
+  @media (prefers-color-scheme: dark) {
+    color-scheme: dark;
+  }
+}
+
+/* Custom Bootstrap overrides */
+.btn-primary {
+  background-color: var(--color-vert-nature);
+  border-color: var(--color-vert-nature);
+  color: var(--color-blanc-pur);
+}
+
+.btn-primary:hover,
+.btn-primary:focus,
+.btn-primary:active {
+  background-color: #5a7a3d;
+  border-color: #5a7a3d;
+  color: var(--color-blanc-pur);
+}
+
+.btn-secondary {
+  background-color: var(--color-bleu-loire);
+  border-color: var(--color-bleu-loire);
+  color: var(--color-blanc-pur);
+}
+
+.btn-secondary:hover,
+.btn-secondary:focus,
+.btn-secondary:active {
+  background-color: #4a7a96;
+  border-color: #4a7a96;
+  color: var(--color-blanc-pur);
+}
+
 .text-primary-custom {
   color: var(--color-vert-nature) !important;
 }
@@ -28,73 +76,147 @@
   background-color: var(--color-rose) !important;
 }
 
-/* Boutons personnalisés */
-.btn-primary {
-  background-color: var(--color-vert-nature);
-  border-color: var(--color-vert-nature);
+/* Header styles */
+.navbar-custom {
+  background-color: var(--color-blanc-pur);
+  box-shadow: 0 2px 4px rgba(64, 64, 64, 0.1);
+  border-bottom: 1px solid var(--color-rose);
 }
 
-.btn-primary:hover {
-  background-color: #5a7a3e;
-  border-color: #5a7a3e;
+.navbar-brand {
+  color: var(--color-vert-nature) !important;
+  font-weight: 600;
+  font-size: 1.5rem;
 }
 
-.btn-outline-primary {
-  color: var(--color-vert-nature);
-  border-color: var(--color-vert-nature);
+.navbar-nav .nav-link {
+  color: var(--color-gris-ardoise) !important;
+  font-weight: 500;
+  padding: 0.75rem 1rem !important;
+  transition: all 0.3s ease;
 }
 
-.btn-outline-primary:hover {
-  background-color: var(--color-vert-nature);
-  border-color: var(--color-vert-nature);
+.navbar-nav .nav-link:hover {
+  color: var(--color-vert-nature) !important;
+  transform: translateY(-1px);
+}
+
+.navbar-nav .nav-link.active {
+  color: var(--color-vert-nature) !important;
+  font-weight: 600;
+}
+
+/* Footer styles */
+.footer-custom {
+  background-color: var(--color-gris-ardoise);
+  color: var(--color-blanc-pur);
+  padding: 3rem 0 1rem;
+}
+
+.footer-custom h5 {
+  color: var(--color-bleu-loire);
+  margin-bottom: 1rem;
+}
+
+.footer-custom a {
+  color: var(--color-blanc-pur);
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.footer-custom a:hover {
+  color: var(--color-bleu-loire);
 }
 
 /* Hero section */
 .hero-section {
   background: linear-gradient(135deg, var(--color-bleu-loire) 0%, var(--color-vert-nature) 100%);
-  color: white;
+  color: var(--color-blanc-pur);
+  padding: 6rem 0;
   min-height: 70vh;
   display: flex;
   align-items: center;
-  padding: 5rem 0;
 }
 
-.hero-section h1 {
+.hero-content h1 {
   font-size: 3.5rem;
-  font-weight: bold;
+  font-weight: 700;
   margin-bottom: 1.5rem;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
 }
 
-.hero-section .lead {
+.hero-content p {
   font-size: 1.25rem;
   margin-bottom: 2rem;
+  opacity: 0.95;
 }
 
 /* Service cards */
 .service-card {
-  border: none;
-  border-radius: 15px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  transition: all 0.3s ease;
+  background: var(--color-blanc-pur);
+  border: 1px solid var(--color-rose);
+  border-radius: 12px;
+  padding: 2rem;
   height: 100%;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  position: relative;
+  overflow: hidden;
+  text-align: center;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.service-card:before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(110, 140, 75, 0.1), transparent);
+  transition: left 0.6s ease;
 }
 
 .service-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  transform: translateY(-10px);
+  box-shadow: 0 20px 40px rgba(64, 64, 64, 0.15);
+  border-color: var(--color-vert-nature);
+}
+
+.service-card:hover:before {
+  left: 100%;
 }
 
 .service-card .card-icon {
-  font-size: 3rem;
-  margin-bottom: 1rem;
+  width: 60px;
+  height: 60px;
+  background: var(--color-vert-nature);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1.5rem;
+  font-size: 1.5rem;
+  color: var(--color-blanc-pur);
+  transition: all 0.3s ease;
+}
+
+.service-card:hover .card-icon {
+  background: var(--color-bleu-loire);
+  transform: scale(1.1);
 }
 
 .service-card h4 {
   color: var(--color-vert-nature);
+  font-weight: 600;
   margin-bottom: 1rem;
 }
 
-/* Quality section */
+.service-card p {
+  color: var(--color-gris-ardoise);
+  line-height: 1.6;
+}
+
+/* Quality charter section */
 .quality-section {
   background-color: var(--color-rose);
   padding: 5rem 0;
@@ -102,34 +224,52 @@
 
 .quality-section h2 {
   color: var(--color-vert-nature);
-  text-align: center;
+  font-weight: 700;
   margin-bottom: 3rem;
+  text-align: center;
 }
 
 .quality-item {
   background: var(--color-blanc-pur);
-  border-radius: 10px;
-  padding: 1.5rem;
-  margin-bottom: 1.5rem;
+  border-radius: 8px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  opacity: 0;
+  transform: translateY(30px);
+  transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
+.quality-item.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.quality-item h4,
 .quality-item h5 {
   color: var(--color-vert-nature);
-  margin-bottom: 0.75rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.quality-item p {
+  color: var(--color-gris-ardoise);
+  line-height: 1.7;
+  margin: 0;
 }
 
 /* Property cards */
 .property-card {
-  transition: all 0.3s ease;
   border: none;
-  overflow: hidden;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
   border-radius: 15px;
+  overflow: hidden;
 }
 
 .property-card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15) !important;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
 }
 
 .property-card .card-img-top {
@@ -141,7 +281,7 @@
   transform: scale(1.05);
 }
 
-/* Availability Calendar */
+/* Availability Calendar Styles */
 .availability-calendar .calendar-day {
   aspect-ratio: 1;
   border: 1px solid #e9ecef;
@@ -154,6 +294,7 @@
   font-size: 0.875rem;
   transition: all 0.2s ease;
   background-color: white;
+  min-height: 50px;
 }
 
 .availability-calendar .calendar-day:hover {
@@ -252,22 +393,40 @@
   margin-bottom: -10px;
 }
 
-/* Contact form */
-.contact-info-card {
-  background: linear-gradient(135deg, var(--color-rose) 0%, var(--color-bleu-loire) 100%);
+/* Admin page styles */
+.admin-header {
+  background-color: var(--color-rose);
+  border-bottom: 2px solid var(--color-vert-nature);
 }
 
-/* Filter section */
-.filter-section {
-  background-color: #f8f9fa;
-  border-radius: 10px;
-  margin-bottom: 2rem;
+/* Login page styles */
+.login-card {
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+  border: none;
+  border-radius: 15px;
 }
 
 /* Map container */
 .leaflet-container {
   height: 400px;
-  border-radius: 10px;
+  width: 100%;
+  border-radius: 8px;
+}
+
+/* Contact page */
+.contact-info-card {
+  background: linear-gradient(135deg, var(--color-rose) 0%, var(--color-bleu-loire) 100%);
+}
+
+/* Admin table improvements */
+.table th {
+  background-color: var(--color-rose);
+  color: var(--color-gris-ardoise);
+  border: none;
+}
+
+.table td {
+  vertical-align: middle;
 }
 
 /* Modal improvements */
@@ -282,17 +441,6 @@
 
 .modal-xl {
   max-width: 1200px;
-}
-
-/* Admin table improvements */
-.table th {
-  background-color: var(--color-rose);
-  color: var(--color-gris-ardoise);
-  border: none;
-}
-
-.table td {
-  vertical-align: middle;
 }
 
 /* Loading states */
@@ -313,71 +461,11 @@
   line-height: 1;
 }
 
-/* Responsive improvements */
-@media (max-width: 768px) {
-  .hero-section {
-    padding: 4rem 0;
-    min-height: 60vh;
-  }
-  
-  .hero-section h1 {
-    font-size: 2.5rem;
-  }
-  
-  .service-card {
-    padding: 1.5rem;
-    margin-bottom: 2rem;
-  }
-  
-  .quality-section {
-    padding: 3rem 0;
-  }
-  
-  .leaflet-container {
-    height: 300px;
-  }
-  
-  .availability-calendar .calendar-day {
-    font-size: 0.75rem;
-    padding: 0.25rem;
-  }
-  
-  .availability-calendar .calendar-price {
-    font-size: 0.6rem;
-  }
-  
-  .property-card .card-img-top {
-    height: 200px;
-  }
-}
-
-@media (max-width: 576px) {
-  .availability-calendar .calendar-grid {
-    gap: 0;
-  }
-  
-  .availability-calendar .calendar-header {
-    padding: 0.5rem 0.25rem;
-    font-size: 0.75rem;
-  }
-  
-  .modal-xl {
-    margin: 0;
-    max-width: 100%;
-    height: 100vh;
-  }
-  
-  .modal-xl .modal-content {
-    height: 100vh;
-    border-radius: 0;
-  }
-}
-
 /* Animations */
-@keyframes fadeIn {
+@keyframes fadeInUp {
   from {
     opacity: 0;
-    transform: translateY(20px);
+    transform: translateY(30px);
   }
   to {
     opacity: 1;
@@ -385,27 +473,15 @@
   }
 }
 
-.fade-in {
-  animation: fadeIn 0.6s ease-out;
+.fade-in-up {
+  animation: fadeInUp 0.8s ease forwards;
 }
 
-/* Scrollbar custom */
-::-webkit-scrollbar {
-  width: 8px;
-}
-
-::-webkit-scrollbar-track {
-  background: #f1f1f1;
-  border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb {
-  background: var(--color-vert-nature);
-  border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: #5a7a3e;
+/* Filter section */
+.filter-section {
+  background-color: #f8f9fa;
+  border-radius: 10px;
+  margin-bottom: 2rem;
 }
 
 /* Custom form controls */
@@ -480,6 +556,122 @@
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+/* Utility classes */
+.min-vh-100 {
+  min-height: 100vh;
+}
+
+.flex-grow-1 {
+  flex-grow: 1;
+}
+
+/* Scrollbar custom */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-vert-nature);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #5a7a3e;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .hero-content h1 {
+    font-size: 2.5rem;
+  }
+  
+  .hero-content p {
+    font-size: 1.1rem;
+  }
+  
+  .service-card {
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+  }
+  
+  .navbar-brand {
+    font-size: 1.25rem;
+  }
+  
+  .hero-section {
+    padding: 4rem 0;
+    min-height: 60vh;
+  }
+  
+  .quality-section {
+    padding: 3rem 0;
+  }
+  
+  .leaflet-container {
+    height: 300px;
+  }
+  
+  .availability-calendar .calendar-day {
+    font-size: 0.75rem;
+    min-height: 40px;
+  }
+  
+  .availability-calendar .calendar-price {
+    font-size: 0.6rem;
+  }
+  
+  .availability-calendar .calendar-header {
+    padding: 0.5rem 0.25rem;
+    font-size: 0.75rem;
+  }
+  
+  .property-card .card-img-top {
+    height: 200px;
+  }
+  
+  .quality-item {
+    padding: 1.5rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .hero-section {
+    padding: 4rem 0;
+  }
+  
+  .hero-content h1 {
+    font-size: 2rem;
+  }
+  
+  .service-card {
+    padding: 1.5rem;
+  }
+  
+  .quality-item {
+    padding: 1.5rem;
+  }
+  
+  .availability-calendar .calendar-grid {
+    gap: 0;
+  }
+  
+  .modal-xl {
+    margin: 0;
+    max-width: 100%;
+    height: 100vh;
+  }
+  
+  .modal-xl .modal-content {
+    height: 100vh;
+    border-radius: 0;
+  }
 }
 
 /* Print styles */
