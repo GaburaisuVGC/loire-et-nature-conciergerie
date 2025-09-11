@@ -34,7 +34,6 @@ export default function PropertyDetailModal({ show, onHide, property }) {
 
   const handleDateSelect = (dates) => {
     console.log('Dates sélectionnées:', dates);
-    // Ici on pourrait ouvrir le formulaire de réservation
   };
 
   const handleImageSelect = (index) => {
@@ -60,9 +59,7 @@ export default function PropertyDetailModal({ show, onHide, property }) {
       <Modal.Body className="p-0">
         <Container fluid className="py-4">
           <Row>
-            {/* Images et informations principales */}
             <Col lg={8}>
-              {/* Carousel d'images */}
               {property.images && property.images.length > 0 ? (
                 <div className="mb-4">
                   <Carousel 
@@ -93,7 +90,6 @@ export default function PropertyDetailModal({ show, onHide, property }) {
                     ))}
                   </Carousel>
                   
-                  {/* Miniatures */}
                   <div className="d-flex mt-3 gap-2 overflow-auto">
                     {property.images.map((image, index) => (
                       <div
@@ -125,7 +121,6 @@ export default function PropertyDetailModal({ show, onHide, property }) {
                 </div>
               )}
 
-              {/* Description */}
               <Card className="mb-4">
                 <Card.Body>
                   <h4 className="text-primary-custom mb-3">Description</h4>
@@ -148,7 +143,6 @@ export default function PropertyDetailModal({ show, onHide, property }) {
                 </Card.Body>
               </Card>
 
-              {/* Informations détaillées avec onglets */}
               <Tabs defaultActiveKey="features" className="mb-4">
                 <Tab eventKey="features" title="Caractéristiques">
                   <Card>
@@ -237,10 +231,8 @@ export default function PropertyDetailModal({ show, onHide, property }) {
               </Tabs>
             </Col>
 
-            {/* Sidebar avec calendrier et réservation */}
             <Col lg={4}>
               <div className="sticky-top" style={{ top: '20px' }}>
-                {/* Prix et informations rapides */}
                 <Card className="mb-3">
                   <Card.Body>
                     <div className="text-center">
@@ -276,7 +268,6 @@ export default function PropertyDetailModal({ show, onHide, property }) {
                   </Card.Body>
                 </Card>
 
-                {/* Calendrier de disponibilités */}
                 <div className="mb-3">
                   <h5 className="text-primary-custom mb-3">Disponibilités</h5>
                   <AvailabilityCalendar
@@ -288,7 +279,6 @@ export default function PropertyDetailModal({ show, onHide, property }) {
                   />
                 </div>
 
-                {/* Actions */}
                 <div className="d-grid gap-2">
                   <Button 
                     as={Link} 
@@ -309,7 +299,6 @@ export default function PropertyDetailModal({ show, onHide, property }) {
                   </Button>
                 </div>
 
-                {/* Informations importantes */}
                 <Alert variant="info" className="mt-3 small">
                   <h6 className="alert-heading">
                     <i className="bi bi-info-circle me-2"></i>

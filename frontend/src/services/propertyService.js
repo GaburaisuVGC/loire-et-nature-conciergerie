@@ -7,28 +7,28 @@ const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api'
 class PropertyService {
   async getPublicProperties() {
     try {
-      // Essayer d'abord l'API
+
       const response = await axios.get(`${API_BASE_URL}/public/properties`);
       return response.data;
     } catch (error) {
       console.warn('API non disponible, utilisation des données mockées');
-      // Fallback vers les données mockées
+
       return new Promise((resolve) => {
         setTimeout(() => {
           resolve(mockProperties);
-        }, 500); // Simulation de latence réseau
+        }, 500);
       });
     }
   }
 
   async getPublicProperty(id) {
     try {
-      // Essayer d'abord l'API
+
       const response = await axios.get(`${API_BASE_URL}/public/properties/${id}`);
       return response.data;
     } catch (error) {
       console.warn('API non disponible, utilisation des données mockées');
-      // Fallback vers les données mockées
+
       return new Promise((resolve, reject) => {
         setTimeout(() => {
           const property = mockProperties.find(p => p.id === id);
@@ -44,7 +44,7 @@ class PropertyService {
 
   async getPropertyAvailability(id, start, end) {
     try {
-      // Essayer d'abord l'API
+
       const params = new URLSearchParams();
       if (start) params.append('start', start);
       if (end) params.append('end', end);
@@ -55,7 +55,7 @@ class PropertyService {
       return response.data;
     } catch (error) {
       console.warn('API non disponible, génération de données mockées de disponibilité');
-      // Fallback vers les données mockées
+
       return new Promise((resolve) => {
         setTimeout(() => {
           const startDate = start ? new Date(start) : new Date();
@@ -76,7 +76,7 @@ class PropertyService {
     }
   }
 
-  // Méthodes admin (nécessitent authentification)
+
   async getProperties() {
     try {
       const token = localStorage.getItem('authToken');
@@ -179,7 +179,7 @@ class PropertyService {
     }
   }
 
-  // Méthodes utilitaires
+
   formatPropertyForDisplay(property) {
     return {
       ...property,

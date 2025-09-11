@@ -7,7 +7,6 @@ import PropertyDetailModal from '../components/PropertyDetailModal';
 import { mockProperties } from '../data/mockData';
 import 'leaflet/dist/leaflet.css';
 
-// Leaflet marker icon fix
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
   iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon-2x.png',
@@ -36,8 +35,7 @@ export default function Reservations() {
   const [priceFilter, setPriceFilter] = useState({ min: '', max: '' });
   const [guestFilter, setGuestFilter] = useState('');
 
-  // Default map center (Loire region)
-  const mapCenter = [47.2869, -2.3890]; // Centré sur La Baule
+  const mapCenter = [47.2869, -2.3890]; 
   const mapZoom = 12;
 
   useEffect(() => {
@@ -51,7 +49,6 @@ export default function Reservations() {
   const loadProperties = async () => {
     try {
       setLoading(true);
-      // Utiliser les données mockées pour l'instant
       setTimeout(() => {
         setProperties(mockProperties);
         setLoading(false);
@@ -66,7 +63,6 @@ export default function Reservations() {
   const applyFilters = () => {
     let filtered = properties;
 
-    // Filtre par terme de recherche
     if (searchTerm) {
       filtered = filtered.filter(property =>
         property.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -75,7 +71,6 @@ export default function Reservations() {
       );
     }
 
-    // Filtre par prix
     if (priceFilter.min) {
       filtered = filtered.filter(property => 
         property.pricing.basePrice >= parseFloat(priceFilter.min)
@@ -87,7 +82,6 @@ export default function Reservations() {
       );
     }
 
-    // Filtre par nombre d'invités
     if (guestFilter) {
       filtered = filtered.filter(property => 
         property.features.maxGuests >= parseInt(guestFilter)
@@ -121,7 +115,6 @@ export default function Reservations() {
   return (
     <div>
       <Container className="py-5">
-        {/* Header */}
         <Row className="mb-5">
           <Col lg={8} className="mx-auto text-center">
             <h1 className="text-primary-custom mb-3">Nos Hébergements</h1>
@@ -132,7 +125,6 @@ export default function Reservations() {
           </Col>
         </Row>
 
-        {/* Filtres */}
         <Row className="mb-4">
           <Col>
             <Card>
@@ -229,7 +221,6 @@ export default function Reservations() {
           </div>
         ) : (
           <>
-            {/* Interactive Map */}
             <Row className="mb-5">
               <Col>
                 <Card>
@@ -291,7 +282,6 @@ export default function Reservations() {
               </Col>
             </Row>
 
-            {/* Properties Grid */}
             <Row>
               {filteredProperties.length === 0 ? (
                 <Col>
@@ -309,7 +299,6 @@ export default function Reservations() {
                 filteredProperties.map((property) => (
                   <Col lg={6} xl={4} key={property.id} className="mb-4">
                     <Card className="h-100 property-card shadow-sm">
-                      {/* Image de couverture */}
                       <div 
                         className="card-img-top"
                         style={{
@@ -322,14 +311,12 @@ export default function Reservations() {
                           position: 'relative'
                         }}
                       >
-                        {/* Badge de prix */}
                         <div className="position-absolute top-0 end-0 m-3">
                           <Badge bg="dark" className="fs-6">
                             {property.pricing.basePrice}€ / nuit
                           </Badge>
                         </div>
                         
-                        {/* Indicateur d'images multiples */}
                         {property.images && property.images.length > 1 && (
                           <div className="position-absolute bottom-0 end-0 m-3">
                             <Badge bg="secondary">
@@ -339,7 +326,6 @@ export default function Reservations() {
                           </div>
                         )}
                         
-                        {/* Placeholder si pas d'image */}
                         {(!property.images || property.images.length === 0) && (
                           <div className="d-flex align-items-center justify-content-center h-100">
                             <div className="text-center text-muted">
@@ -369,7 +355,6 @@ export default function Reservations() {
                           }
                         </p>
 
-                        {/* Caractéristiques principales */}
                         <div className="mb-3">
                           <Row className="small text-muted">
                             <Col>
@@ -387,7 +372,6 @@ export default function Reservations() {
                           </Row>
                         </div>
 
-                        {/* Tags pour services */}
                         <div className="mb-3">
                           {property.suitableFor && property.suitableFor.map((type, index) => (
                             <Badge key={index} bg="light" text="dark" className="me-1 mb-1">
@@ -441,7 +425,6 @@ export default function Reservations() {
               )}
             </Row>
 
-            {/* Call to action */}
             <Row className="mt-5">
               <Col lg={8} className="mx-auto">
                 <Card className="bg-rose-custom border-0">
@@ -472,7 +455,6 @@ export default function Reservations() {
         )}
       </Container>
 
-      {/* Modal de détails de propriété */}
       <PropertyDetailModal
         show={showDetailModal}
         onHide={() => setShowDetailModal(false)}

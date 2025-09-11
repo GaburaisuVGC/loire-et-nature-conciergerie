@@ -6,7 +6,7 @@ export class Property {
     this.name = data.name;
     this.address = data.address;
     this.beds24Id = data.beds24Id;
-    this.coordinates = data.coordinates || null; // { lat, lng }
+    this.coordinates = data.coordinates || null;
     this.description = data.description || '';
     this.images = data.images || [];
     this.createdAt = data.createdAt || new Date();

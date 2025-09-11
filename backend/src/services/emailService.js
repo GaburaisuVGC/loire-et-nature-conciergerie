@@ -1,4 +1,3 @@
-// backend/src/services/emailService.js
 import nodemailer from 'nodemailer';
 import dotenv from 'dotenv';
 
@@ -10,17 +9,14 @@ class EmailService {
   }
 
   createTransporter() {
-    // Configuration pour différents providers
     const emailConfig = {
-      // Gmail
       gmail: {
         service: 'gmail',
         auth: {
           user: process.env.GMAIL_USER,
-          pass: process.env.GMAIL_APP_PASSWORD // Mot de passe d'application
+          pass: process.env.GMAIL_APP_PASSWORD
         }
       },
-      // SMTP générique
       smtp: {
         host: process.env.SMTP_HOST,
         port: process.env.SMTP_PORT || 587,
@@ -30,7 +26,6 @@ class EmailService {
           pass: process.env.SMTP_PASSWORD
         }
       },
-      // Configuration de test (Ethereal Email)
       test: {
         host: 'smtp.ethereal.email',
         port: 587,
@@ -57,7 +52,6 @@ class EmailService {
     try {
       const { name, email, phone, subject, message, propertyInterest, timestamp } = contactData;
 
-      // Email pour l'administrateur
       const adminEmailOptions = {
         from: process.env.EMAIL_FROM || 'noreply@loire-nature-conciergerie.fr',
         to: process.env.ADMIN_EMAIL || 'contact@loire-nature-conciergerie.fr',
@@ -73,7 +67,6 @@ class EmailService {
         })
       };
 
-      // Email de confirmation pour le client
       const clientEmailOptions = {
         from: process.env.EMAIL_FROM || 'contact@loire-nature-conciergerie.fr',
         to: email,
@@ -85,7 +78,6 @@ class EmailService {
         })
       };
 
-      // Envoi des emails
       const [adminResult, clientResult] = await Promise.all([
         this.transporter.sendMail(adminEmailOptions),
         this.transporter.sendMail(clientEmailOptions)

@@ -23,8 +23,6 @@ const beds24Service = new Beds24Service();
  */
 export const getPublicProperties = async (req, res, next) => {
   try {
-    // Pour l'instant, on retourne les données mockées
-    // Plus tard, cela viendra de la base de données
     const mockProperties = [
       {
         id: "1",
@@ -119,7 +117,6 @@ export const getPublicProperty = async (req, res, next) => {
   try {
     const { id } = req.params;
     
-    // Mock data complet - remplacer par Property.findById(id) plus tard
     const mockProperties = {
       "1": {
         id: "1",
@@ -329,7 +326,6 @@ export const getPropertyAvailability = async (req, res, next) => {
     const { id } = req.params;
     const { start, end } = req.query;
 
-    // Mock des données de disponibilité
     const generateMockAvailability = () => {
       const availability = {};
       const startDate = start ? new Date(start) : new Date();
@@ -337,7 +333,7 @@ export const getPropertyAvailability = async (req, res, next) => {
       
       for (let d = new Date(startDate); d <= endDate; d.setDate(d.getDate() + 1)) {
         const dateKey = d.toISOString().split('T')[0];
-        const isAvailable = Math.random() > 0.2; // 80% de chance d'être disponible
+        const isAvailable = Math.random() > 0.2;
         const basePrice = 61.80;
         const priceVariation = (Math.random() - 0.5) * 20;
         
@@ -428,14 +424,12 @@ export const sendContactMessage = async (req, res, next) => {
   try {
     const { name, email, phone, subject, message, propertyInterest } = req.body;
 
-    // Validation des champs requis
     if (!name || !email || !message) {
       return res.status(400).json({ 
         error: 'Les champs nom, email et message sont requis' 
       });
     }
 
-    // Validation de l'email
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       return res.status(400).json({ 
@@ -443,7 +437,6 @@ export const sendContactMessage = async (req, res, next) => {
       });
     }
 
-    // Validation de la longueur des champs
     if (name.trim().length < 2) {
       return res.status(400).json({ 
         error: 'Le nom doit contenir au moins 2 caractères' 
@@ -456,7 +449,6 @@ export const sendContactMessage = async (req, res, next) => {
       });
     }
 
-    // Préparation des données du message
     const contactData = {
       id: Date.now().toString(),
       name: name.trim(),
@@ -485,7 +477,6 @@ export const sendContactMessage = async (req, res, next) => {
     console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
 
     // TODO: Implémenter l'envoi d'email réel
-    // Décommenter ces lignes quand le service email sera configuré
     /*
     try {
       const emailService = await import('../services/emailService.js');
@@ -500,7 +491,6 @@ export const sendContactMessage = async (req, res, next) => {
     // TODO: Sauvegarder en base de données
     // await ContactMessage.create(contactData);
 
-    // Réponse de succès
     res.json({
       success: true,
       message: 'Votre message a été envoyé avec succès. Nous vous recontacterons dans les plus brefs délais.',
@@ -514,13 +504,11 @@ export const sendContactMessage = async (req, res, next) => {
   }
 };
 
-// Routes publiques
 router.get('/properties', getPublicProperties);
 router.get('/properties/:id', getPublicProperty);
 router.get('/properties/:id/availability', getPropertyAvailability);
 router.post('/contact', sendContactMessage);
 
-// Route de test pour vérifier que l'API fonctionne
 router.get('/health', (req, res) => {
   res.json({
     status: 'OK',

@@ -24,7 +24,6 @@ export default function Contact() {
       [name]: value
     }));
     
-    // Effacer l'erreur du champ modifié
     if (formErrors[name]) {
       setFormErrors(prev => ({
         ...prev,
@@ -39,7 +38,7 @@ export default function Contact() {
     setShowAlert(false);
     
     try {
-      // Validation côté client
+
       const validation = contactService.validateContactForm(formData);
       
       if (!validation.isValid) {
@@ -52,17 +51,17 @@ export default function Contact() {
         return;
       }
 
-      // Envoi du message
+
       const result = await contactService.sendContactMessage(formData);
       
-      // Succès
+
       setAlertData({
         type: 'success',
         message: result.message || 'Votre message a été envoyé avec succès !'
       });
       setShowAlert(true);
       
-      // Réinitialiser le formulaire
+
       setFormData({
         name: '',
         email: '',
@@ -73,7 +72,7 @@ export default function Contact() {
       });
       setFormErrors({});
       
-      // Scroll vers le haut pour voir le message de succès
+
       window.scrollTo({ top: 0, behavior: 'smooth' });
       
     } catch (error) {

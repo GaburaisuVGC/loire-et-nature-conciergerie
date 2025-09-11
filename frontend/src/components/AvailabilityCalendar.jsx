@@ -13,7 +13,6 @@ export default function AvailabilityCalendar({ propertyId, availability, loading
   const monthEnd = endOfMonth(currentMonth);
   const monthDays = eachDayOfInterval({ start: monthStart, end: monthEnd });
 
-  // Jours de la semaine en français
   const weekDays = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'];
 
   const handlePrevMonth = () => {
@@ -39,16 +38,16 @@ export default function AvailabilityCalendar({ propertyId, availability, loading
     if (!dayAvailability?.available) return;
 
     if (!selectedDates.checkIn || (selectedDates.checkIn && selectedDates.checkOut)) {
-      // Nouvelle sélection
+
       setSelectedDates({ checkIn: date, checkOut: null });
     } else if (date > selectedDates.checkIn) {
-      // Sélection de la date de départ
+
       setSelectedDates(prev => ({ ...prev, checkOut: date }));
       if (onDateSelect) {
         onDateSelect({ checkIn: selectedDates.checkIn, checkOut: date });
       }
     } else {
-      // Nouvelle sélection si date antérieure
+
       setSelectedDates({ checkIn: date, checkOut: null });
     }
   };
@@ -110,15 +109,15 @@ export default function AvailabilityCalendar({ propertyId, availability, loading
     return availability?.[dateKey]?.price;
   };
 
-  // Calculer le premier jour de la semaine (Lundi = 1)
+
   const startDate = new Date(monthStart);
   const dayOfWeek = startDate.getDay();
   const mondayOffset = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
   startDate.setDate(startDate.getDate() - mondayOffset);
 
-  // Générer toutes les semaines du mois
+
   const calendarDays = [];
-  for (let i = 0; i < 42; i++) { // 6 semaines * 7 jours
+  for (let i = 0; i < 42; i++) { 
     const day = new Date(startDate);
     day.setDate(startDate.getDate() + i);
     calendarDays.push(day);
@@ -297,14 +296,14 @@ export default function AvailabilityCalendar({ propertyId, availability, loading
           ) : (
             <>
               <div className="calendar-grid">
-                {/* En-têtes des jours */}
+
                 {weekDays.map(day => (
                   <div key={day} className="calendar-header">
                     {day}
                   </div>
                 ))}
                 
-                {/* Jours du calendrier */}
+
                 {calendarDays.map((date, index) => {
                   const price = getDatePrice(date);
                   const isCurrentMonth = isSameMonth(date, currentMonth);
@@ -326,7 +325,7 @@ export default function AvailabilityCalendar({ propertyId, availability, loading
                 })}
               </div>
               
-              {/* Légende */}
+
               <div className="p-3 border-top">
                 <Row className="text-center small">
                   <Col>
@@ -377,7 +376,7 @@ export default function AvailabilityCalendar({ propertyId, availability, loading
           )}
         </Card.Body>
         
-        {/* Résumé de sélection */}
+
         {(selectedDates.checkIn || selectedDates.checkOut) && (
           <Card.Footer>
             <Row>
@@ -424,7 +423,6 @@ export default function AvailabilityCalendar({ propertyId, availability, loading
         )}
       </Card>
       
-      {/* Instructions */}
       <Alert variant="info" className="mt-3">
         <div className="small">
           <strong>Comment réserver :</strong>

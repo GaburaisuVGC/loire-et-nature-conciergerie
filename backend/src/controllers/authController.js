@@ -57,7 +57,6 @@ export const login = async (req, res, next) => {
       });
     }
 
-    // Vérifier le token Firebase et récupérer le rôle
     const user = await authService.verifyFirebaseIdToken(idToken);
     
     if (!user.isAdmin) {
@@ -66,7 +65,6 @@ export const login = async (req, res, next) => {
       });
     }
 
-    // Générer un token JWT custom pour l'API
     const jwtToken = authService.generateJwtToken(user);
     
     res.json({
