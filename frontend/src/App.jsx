@@ -2,7 +2,6 @@ import React from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AppLayout } from "./components/Layout";
 import Home from "./pages/Home";
-import About from "./pages/About";
 import NotreDemarche from "./pages/NotreDemarche";
 import Reservations from "./pages/Reservations";
 import Contact from "./pages/Contact";
