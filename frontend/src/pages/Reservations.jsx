@@ -31,9 +31,13 @@ export default function Reservations() {
   const [error, setError] = useState('');
   const [selectedProperty, setSelectedProperty] = useState(null);
   const [showDetailModal, setShowDetailModal] = useState(false);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [priceFilter, setPriceFilter] = useState({ min: '', max: '' });
-  const [guestFilter, setGuestFilter] = useState('');
+  
+  // Nouveaux filtres de réservation
+  const [dateArrivee, setDateArrivee] = useState('');
+  const [dateDepart, setDateDepart] = useState('');
+  const [nuits, setNuits] = useState(1);
+  const [adultes, setAdultes] = useState(1);
+  const [enfants, setEnfants] = useState(0);
 
   const mapCenter = [47.2869, -2.3890]; 
   const mapZoom = 12;
@@ -44,7 +48,20 @@ export default function Reservations() {
 
   useEffect(() => {
     applyFilters();
-  }, [properties, searchTerm, priceFilter, guestFilter]);
+  }, [properties, dateArrivee, dateDepart, nuits, adultes, enfants]);
+
+  // Calcul automatique du nombre de nuits
+  useEffect(() => {
+    if (dateArrivee && dateDepart) {
+      const arrivee = new Date(dateArrivee);
+      const depart = new Date(dateDepart);
+      const diffTime = Math.abs(depart - arrivee);
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+      if (diffDays > 0 && diffDays <= 365) {
+        setNuits(diffDays);
+      }
+    }
+  }, [dateArrivee, dateDepart]);
 
   const loadProperties = async () => {
     try {
@@ -63,31 +80,16 @@ export default function Reservations() {
   const applyFilters = () => {
     let filtered = properties;
 
-    if (searchTerm) {
-      filtered = filtered.filter(property =>
-        property.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        property.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        property.address.toLowerCase().includes(searchTerm.toLowerCase())
+    // Filtre par capacité (adultes + enfants)
+    const totalPersonnes = adultes + enfants;
+    if (totalPersonnes > 0) {
+      filtered = filtered.filter(property => 
+        property.features.maxGuests >= totalPersonnes
       );
     }
 
-    if (priceFilter.min) {
-      filtered = filtered.filter(property => 
-        property.pricing.basePrice >= parseFloat(priceFilter.min)
-      );
-    }
-    if (priceFilter.max) {
-      filtered = filtered.filter(property => 
-        property.pricing.basePrice <= parseFloat(priceFilter.max)
-      );
-    }
-
-    if (guestFilter) {
-      filtered = filtered.filter(property => 
-        property.features.maxGuests >= parseInt(guestFilter)
-      );
-    }
-
+    // TODO: Ajouter ici les filtres de disponibilité par dates une fois l'API connectée
+    
     setFilteredProperties(filtered);
   };
 
@@ -106,112 +108,88 @@ export default function Reservations() {
     );
   };
 
-  const clearFilters = () => {
-    setSearchTerm('');
-    setPriceFilter({ min: '', max: '' });
-    setGuestFilter('');
+  const handleSearch = () => {
+    // La recherche se fait automatiquement via les useEffect
+    console.log('Recherche avec les critères:', {
+      dateArrivee,
+      dateDepart,
+      nuits,
+      adultes,
+      enfants
+    });
   };
+
+  if (error) {
+    return (
+      <Container className="py-5">
+        <Alert variant="danger" className="text-center">
+          <h5>Erreur</h5>
+          <p>{error}</p>
+          <Button variant="outline-danger" onClick={loadProperties}>
+            Réessayer
+          </Button>
+        </Alert>
+      </Container>
+    );
+  }
 
   return (
     <div>
+      {/* Hero Section */}
+      <section 
+        className="hero-section"
+        style={{
+          backgroundImage: `url('/hero-image-reservations.jpg')`,
+          backgroundColor: '#D8CBB5',
+          backgroundSize: 'fill',
+        }}
+      >
+        <div className="hero-overlay"></div>
+        <Container>
+          <div className="hero-content">
+            <h1 className="font-garamond text-vert hero-title" style={{ fontStyle: 'italic' }}>
+              Les Logements avec Loire & Nature Conciergerie
+            </h1>
+          </div>
+        </Container>
+      </section>
+
       <Container className="py-5">
-        <Row className="mb-5">
-          <Col lg={8} className="mx-auto text-center">
-            <h1 className="text-primary-custom mb-3">Nos Hébergements</h1>
-            <p className="lead text-muted">
-              Découvrez notre sélection de logements soigneusement entretenus dans la région de La Baule. 
-              Chaque propriété bénéficie de notre service de conciergerie premium.
-            </p>
-          </Col>
-        </Row>
+        {/* Notre engagement */}
+        <section className="py-5">
+          <div className="section-title">
+            <h2>Notre engagement</h2>
+          </div>
 
-        <Row className="mb-4">
-          <Col>
-            <Card>
-              <Card.Body>
-                <h5 className="text-primary-custom mb-3">Filtrer les résultats</h5>
-                <Row>
-                  <Col md={4}>
-                    <Form.Group className="mb-3">
-                      <Form.Label>Rechercher</Form.Label>
-                      <InputGroup>
-                        <Form.Control
-                          type="text"
-                          placeholder="Nom, description, localisation..."
-                          value={searchTerm}
-                          onChange={(e) => setSearchTerm(e.target.value)}
-                        />
-                        <InputGroup.Text>
-                          <i className="bi bi-search"></i>
-                        </InputGroup.Text>
-                      </InputGroup>
-                    </Form.Group>
-                  </Col>
-                  <Col md={3}>
-                    <Form.Group className="mb-3">
-                      <Form.Label>Prix minimum</Form.Label>
-                      <InputGroup>
-                        <Form.Control
-                          type="number"
-                          placeholder="0"
-                          value={priceFilter.min}
-                          onChange={(e) => setPriceFilter(prev => ({ ...prev, min: e.target.value }))}
-                        />
-                        <InputGroup.Text>€</InputGroup.Text>
-                      </InputGroup>
-                    </Form.Group>
-                  </Col>
-                  <Col md={3}>
-                    <Form.Group className="mb-3">
-                      <Form.Label>Prix maximum</Form.Label>
-                      <InputGroup>
-                        <Form.Control
-                          type="number"
-                          placeholder="500"
-                          value={priceFilter.max}
-                          onChange={(e) => setPriceFilter(prev => ({ ...prev, max: e.target.value }))}
-                        />
-                        <InputGroup.Text>€</InputGroup.Text>
-                      </InputGroup>
-                    </Form.Group>
-                  </Col>
-                  <Col md={2}>
-                    <Form.Group className="mb-3">
-                      <Form.Label>Invités min.</Form.Label>
-                      <Form.Select
-                        value={guestFilter}
-                        onChange={(e) => setGuestFilter(e.target.value)}
-                      >
-                        <option value="">Tous</option>
-                        <option value="1">1+</option>
-                        <option value="2">2+</option>
-                        <option value="4">4+</option>
-                        <option value="6">6+</option>
-                      </Form.Select>
-                    </Form.Group>
-                  </Col>
-                </Row>
-                <div className="d-flex justify-content-between align-items-center">
-                  <span className="text-muted">
-                    {filteredProperties.length} propriété(s) trouvée(s)
-                  </span>
-                  <Button variant="outline-secondary" size="sm" onClick={clearFilters}>
-                    <i className="bi bi-arrow-clockwise me-1"></i>
-                    Effacer les filtres
-                  </Button>
+          <Row className="justify-content-center">
+            <Col lg={10}>
+              <div className="engagement-content text-center">
+                <p className="mb-4" style={{ fontSize: '1.1rem', lineHeight: '1.8' }}>
+                  <strong>Loire & Nature</strong>, c'est un projet de cœur, né d'une volonté d'associer gestion locative et faire 
+                  découvrir aux voyageurs des produits de fabrication artisanale de la région.
+                </p>
+                
+                <p className="mb-4" style={{ fontSize: '1.1rem', lineHeight: '1.8' }}>
+                  Nous proposons un service clés en main aux propriétaires afin de faciliter et optimiser 
+                  la gestion locative des logements en location de courte durée type Airbnb, booking...
+                </p>
+                
+                <p className="mb-4" style={{ fontSize: '1.1rem', lineHeight: '1.8' }}>
+                  Nous intervenons sur l'agglomération Orléanaise et des communes environnantes 
+                  (Mardié, Checy, Combleux, La Chapelle Saint Mesmin et autres)
+                </p>
+
+                <div className="text-center mt-4">
+                  <Link to="/contact" className="btn-custom-vert">
+                    Prendre rendez-vous
+                  </Link>
                 </div>
-              </Card.Body>
-            </Card>
-          </Col>
-        </Row>
+              </div>
+            </Col>
+          </Row>
+        </section>
 
-        {error && (
-          <Alert variant="danger" className="mb-4">
-            <i className="bi bi-exclamation-triangle me-2"></i>
-            {error}
-          </Alert>
-        )}
-
+        {/* Carte */}
         {loading ? (
           <div className="text-center py-5">
             <div className="spinner-border text-primary" role="status">
@@ -220,246 +198,268 @@ export default function Reservations() {
             <p className="mt-3">Chargement des propriétés...</p>
           </div>
         ) : (
-          <>
-            <Row className="mb-5">
-              <Col>
-                <Card>
-                  <Card.Header>
-                    <h3 className="mb-0">
-                      <i className="bi bi-geo-alt me-2"></i>
-                      Localisation de nos propriétés
-                    </h3>
-                  </Card.Header>
-                  <Card.Body className="p-0">
-                    <div style={{ height: '400px', width: '100%' }}>
-                      <MapContainer
-                        center={mapCenter}
-                        zoom={mapZoom}
-                        style={{ height: '100%', width: '100%' }}
-                      >
-                        <TileLayer
-                          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                        />
-                        {getValidCoordinatesProperties().map((property) => (
-                          <Marker
-                            key={property.id}
-                            position={[property.coordinates.lat, property.coordinates.lng]}
-                            icon={customIcon}
-                          >
-                            <Popup>
-                              <div style={{ minWidth: '200px' }}>
-                                <h6 className="mb-2">{property.name}</h6>
-                                <p className="mb-2 small text-muted">{property.address}</p>
-                                <div className="mb-2">
-                                  <Badge bg="primary">{property.pricing.basePrice}€/nuit</Badge>
-                                  <Badge bg="secondary" className="ms-1">
-                                    {property.features.maxGuests} pers.
-                                  </Badge>
-                                </div>
-                                <Button
-                                  size="sm"
-                                  className="btn-primary w-100"
-                                  onClick={() => handleViewDetails(property)}
-                                >
-                                  Voir les détails
-                                </Button>
+          <Row className="mb-5">
+            <Col>
+              <Card>
+                <Card.Header>
+                  <h3 className="mb-0">
+                    <i className="bi bi-geo-alt me-2"></i>
+                    Localisation de nos propriétés
+                  </h3>
+                </Card.Header>
+                <Card.Body className="p-0">
+                  <div style={{ height: '400px', width: '100%' }}>
+                    <MapContainer
+                      center={mapCenter}
+                      zoom={mapZoom}
+                      style={{ height: '100%', width: '100%' }}
+                    >
+                      <TileLayer
+                        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                      />
+                      {getValidCoordinatesProperties().map((property) => (
+                        <Marker
+                          key={property.id}
+                          position={[property.coordinates.lat, property.coordinates.lng]}
+                          icon={customIcon}
+                        >
+                          <Popup>
+                            <div style={{ minWidth: '200px' }}>
+                              <h6 className="mb-2">{property.name}</h6>
+                              <p className="mb-2 small text-muted">{property.address}</p>
+                              <div className="mb-2">
+                                <Badge bg="primary">{property.pricing.basePrice}€/nuit</Badge>
+                                <Badge bg="secondary" className="ms-1">
+                                  {property.features.maxGuests} pers.
+                                </Badge>
                               </div>
-                            </Popup>
-                          </Marker>
-                        ))}
-                      </MapContainer>
-                    </div>
-                    {getValidCoordinatesProperties().length === 0 && (
-                      <div className="text-center py-4">
-                        <p className="text-muted">
-                          Aucune propriété avec coordonnées disponible pour l'affichage sur la carte.
-                        </p>
-                      </div>
-                    )}
-                  </Card.Body>
-                </Card>
-              </Col>
-            </Row>
-
-            <Row>
-              {filteredProperties.length === 0 ? (
-                <Col>
-                  <Alert variant="info" className="text-center">
-                    <h5>Aucune propriété trouvée</h5>
-                    <p className="mb-3">
-                      Aucun hébergement ne correspond à vos critères de recherche.
-                    </p>
-                    <Button variant="outline-primary" onClick={clearFilters}>
-                      Voir toutes les propriétés
-                    </Button>
-                  </Alert>
-                </Col>
-              ) : (
-                filteredProperties.map((property) => (
-                  <Col lg={6} xl={4} key={property.id} className="mb-4">
-                    <Card className="h-100 property-card shadow-sm">
-                      <div 
-                        className="card-img-top"
-                        style={{
-                          height: '250px',
-                          backgroundImage: property.images?.[0]?.url 
-                            ? `url(${property.images[0].url})` 
-                            : 'linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%)',
-                          backgroundSize: 'cover',
-                          backgroundPosition: 'center',
-                          position: 'relative'
-                        }}
-                      >
-                        <div className="position-absolute top-0 end-0 m-3">
-                          <Badge bg="dark" className="fs-6">
-                            {property.pricing.basePrice}€ / nuit
-                          </Badge>
-                        </div>
-                        
-                        {property.images && property.images.length > 1 && (
-                          <div className="position-absolute bottom-0 end-0 m-3">
-                            <Badge bg="secondary">
-                              <i className="bi bi-images me-1"></i>
-                              {property.images.length}
-                            </Badge>
-                          </div>
-                        )}
-                        
-                        {(!property.images || property.images.length === 0) && (
-                          <div className="d-flex align-items-center justify-content-center h-100">
-                            <div className="text-center text-muted">
-                              <i className="bi bi-image" style={{ fontSize: '3rem' }}></i>
-                              <p className="mt-2 mb-0">Photo à venir</p>
-                            </div>
-                          </div>
-                        )}
-                      </div>
-
-                      <Card.Body className="d-flex flex-column">
-                        <div className="mb-3">
-                          <h5 className="text-primary-custom mb-1">{property.name}</h5>
-                          {property.subtitle && (
-                            <p className="text-muted small mb-2">{property.subtitle}</p>
-                          )}
-                          <p className="text-muted small mb-0">
-                            <i className="bi bi-geo-alt me-1"></i>
-                            {property.address}
-                          </p>
-                        </div>
-
-                        <p className="card-text flex-grow-1">
-                          {property.description.length > 120 
-                            ? `${property.description.substring(0, 120)}...` 
-                            : property.description
-                          }
-                        </p>
-
-                        <div className="mb-3">
-                          <Row className="small text-muted">
-                            <Col>
-                              <i className="bi bi-people me-1"></i>
-                              {property.features.maxGuests} pers.
-                            </Col>
-                            <Col>
-                              <i className="bi bi-rulers me-1"></i>
-                              {property.features.surface}
-                            </Col>
-                            <Col>
-                              <i className="bi bi-bed me-1"></i>
-                              {property.features.bedConfiguration.includes('double') ? 'Lit double' : 'Lits'}
-                            </Col>
-                          </Row>
-                        </div>
-
-                        <div className="mb-3">
-                          {property.suitableFor && property.suitableFor.map((type, index) => (
-                            <Badge key={index} bg="light" text="dark" className="me-1 mb-1">
-                              {type}
-                            </Badge>
-                          ))}
-                          
-                          {property.availability === 'available' && (
-                            <Badge bg="success" className="ms-2">
-                              <i className="bi bi-check-circle me-1"></i>
-                              Disponible
-                            </Badge>
-                          )}
-                        </div>
-
-                        <div className="mt-auto">
-                          <div className="d-grid gap-2">
-                            <Button
-                              className="btn-primary"
-                              onClick={() => handleViewDetails(property)}
-                            >
-                              <i className="bi bi-eye me-2"></i>
-                              Voir les détails
-                            </Button>
-                            
-                            <div className="d-flex gap-2">
                               <Button
-                                as={Link}
-                                to="/contact"
-                                variant="outline-primary"
                                 size="sm"
-                                className="flex-fill"
+                                className="btn-primary w-100"
+                                onClick={() => handleViewDetails(property)}
                               >
-                                <i className="bi bi-envelope me-1"></i>
-                                Contact
-                              </Button>
-                              <Button
-                                variant="outline-secondary"
-                                size="sm"
-                                href="tel:+33200000000"
-                              >
-                                <i className="bi bi-telephone"></i>
+                                Voir les détails
                               </Button>
                             </div>
-                          </div>
-                        </div>
-                      </Card.Body>
-                    </Card>
-                  </Col>
-                ))
-              )}
-            </Row>
-
-            <Row className="mt-5">
-              <Col lg={8} className="mx-auto">
-                <Card className="bg-rose-custom border-0">
-                  <Card.Body className="text-center p-5">
-                    <h3 className="text-primary-custom mb-3">
-                      <i className="bi bi-house-heart me-2"></i>
-                      Service Premium Garanti
-                    </h3>
-                    <p className="lead mb-4">
-                      Tous nos hébergements bénéficient de notre service de conciergerie complet : 
-                      ménage professionnel, maintenance, accueil personnalisé et assistance 24h/7j.
-                    </p>
-                    <div className="d-flex flex-wrap justify-content-center gap-3">
-                      <Button as={Link} to="/services" className="btn-primary">
-                        <i className="bi bi-list-check me-2"></i>
-                        Découvrir nos services
-                      </Button>
-                      <Button as={Link} to="/contact" variant="outline-primary">
-                        <i className="bi bi-calendar-plus me-2"></i>
-                        Planifier une visite
-                      </Button>
+                          </Popup>
+                        </Marker>
+                      ))}
+                    </MapContainer>
+                  </div>
+                  {getValidCoordinatesProperties().length === 0 && (
+                    <div className="text-center py-4">
+                      <p className="text-muted">
+                        Aucune propriété avec coordonnées disponible pour l'affichage sur la carte.
+                      </p>
                     </div>
-                  </Card.Body>
-                </Card>
-              </Col>
-            </Row>
-          </>
+                  )}
+                </Card.Body>
+              </Card>
+            </Col>
+          </Row>
         )}
+
+        {/* Filtres de réservation */}
+        <Row className="mb-4">
+          <Col>
+            <Card>
+              <Card.Body>
+                <h5 className="text-vert mb-3">Rechercher votre séjour</h5>
+                <Row>
+                  <Col md={2}>
+                    <Form.Group className="mb-3">
+                      <Form.Label>Arrivée</Form.Label>
+                      <Form.Control
+                        type="date"
+                        value={dateArrivee}
+                        onChange={(e) => setDateArrivee(e.target.value)}
+                        min={new Date().toISOString().split('T')[0]}
+                      />
+                    </Form.Group>
+                  </Col>
+                  <Col md={2}>
+                    <Form.Group className="mb-3">
+                      <Form.Label>Départ</Form.Label>
+                      <Form.Control
+                        type="date"
+                        value={dateDepart}
+                        onChange={(e) => setDateDepart(e.target.value)}
+                        min={dateArrivee || new Date().toISOString().split('T')[0]}
+                      />
+                    </Form.Group>
+                  </Col>
+                  <Col md={2}>
+                    <Form.Group className="mb-3">
+                      <Form.Label>Nuits</Form.Label>
+                      <Form.Control
+                        type="number"
+                        min="1"
+                        max="365"
+                        value={nuits}
+                        onChange={(e) => setNuits(parseInt(e.target.value) || 1)}
+                      />
+                    </Form.Group>
+                  </Col>
+                  <Col md={2}>
+                    <Form.Group className="mb-3">
+                      <Form.Label>Adultes</Form.Label>
+                      <Form.Control
+                        type="number"
+                        min="1"
+                        max="99"
+                        value={adultes}
+                        onChange={(e) => setAdultes(parseInt(e.target.value) || 1)}
+                      />
+                    </Form.Group>
+                  </Col>
+                  <Col md={2}>
+                    <Form.Group className="mb-3">
+                      <Form.Label>Enfants</Form.Label>
+                      <Form.Control
+                        type="number"
+                        min="0"
+                        max="99"
+                        value={enfants}
+                        onChange={(e) => setEnfants(parseInt(e.target.value) || 0)}
+                      />
+                    </Form.Group>
+                  </Col>
+                  <Col md={2}>
+                    <Form.Group className="mb-3">
+                      <Form.Label>&nbsp;</Form.Label>
+                      <Button 
+                        variant="primary" 
+                        className="d-block w-100 font-garamond text-vert bg-blanc border-2"
+                        style={{ 
+                          borderColor: 'var(--vert-loire)',
+                          color: 'var(--vert-loire)',
+                          backgroundColor: 'var(--blanc)'
+                        }}
+                        onMouseEnter={(e) => {
+                          e.target.style.backgroundColor = 'var(--vert-loire)';
+                          e.target.style.color = 'var(--blanc)';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.target.style.backgroundColor = 'var(--blanc)';
+                          e.target.style.color = 'var(--vert-loire)';
+                        }}
+                        onClick={handleSearch}
+                      >
+                        Chercher
+                      </Button>
+                    </Form.Group>
+                  </Col>
+                </Row>
+                
+                {(adultes + enfants > 0) && (
+                  <Row>
+                    <Col>
+                      <div className="mt-2">
+                        <small className="text-muted">
+                          Recherche pour {adultes + enfants} personne{(adultes + enfants > 1) ? 's' : ''} 
+                          {dateArrivee && dateDepart && ` • ${nuits} nuit${nuits > 1 ? 's' : ''}`}
+                        </small>
+                      </div>
+                    </Col>
+                  </Row>
+                )}
+              </Card.Body>
+            </Card>
+          </Col>
+        </Row>
+
+        {/* Liste des logements */}
+        <Row>
+          {filteredProperties.length === 0 ? (
+            <Col>
+              <Alert variant="info" className="text-center">
+                <h5>Aucune propriété trouvée</h5>
+                <p className="mb-3">
+                  Aucun hébergement ne correspond à vos critères de recherche.
+                </p>
+              </Alert>
+            </Col>
+          ) : (
+            filteredProperties.map((property) => (
+              <Col lg={6} xl={4} key={property.id} className="mb-4">
+                <Card className="h-100 property-card shadow-sm">
+                  <div 
+                    className="card-img-top"
+                    style={{
+                      height: '250px',
+                      backgroundImage: property.images?.[0]?.url 
+                        ? `url('${property.images[0].url}')`
+                        : 'url("/images/placeholder-property.jpg")',
+                      backgroundSize: 'cover',
+                      backgroundPosition: 'center',
+                      borderRadius: '0.375rem 0.375rem 0 0'
+                    }}
+                  >
+                    <div className="position-absolute top-0 end-0 m-2">
+                      <Badge bg="primary" className="fs-6">
+                        {property.pricing.basePrice}€/nuit
+                      </Badge>
+                    </div>
+                  </div>
+                  
+                  <Card.Body className="d-flex flex-column">
+                    <div className="mb-2">
+                      <h5 className="text-vert mb-1">{property.name}</h5>
+                      {property.subtitle && (
+                        <p className="small text-muted mb-0">{property.subtitle}</p>
+                      )}
+                    </div>
+                    
+                    <p className="text-muted small mb-2">
+                      <i className="bi bi-geo-alt me-1"></i>
+                      {property.address}
+                    </p>
+                    
+                    <p className="mb-3 flex-grow-1">
+                      {property.description.length > 100 
+                        ? `${property.description.substring(0, 100)}...` 
+                        : property.description}
+                    </p>
+                    
+                    <div className="mb-3">
+                      <div className="d-flex justify-content-between text-sm">
+                        <span><i className="bi bi-people me-1"></i>{property.features.maxGuests} pers.</span>
+                        <span><i className="bi bi-house me-1"></i>{property.features.surface}</span>
+                      </div>
+                      <div className="mt-1">
+                        <small className="text-muted">{property.features.bedConfiguration}</small>
+                      </div>
+                    </div>
+                    
+                    <div className="mt-auto">
+                      <Button 
+                        variant="outline-primary" 
+                        className="w-100"
+                        onClick={() => handleViewDetails(property)}
+                      >
+                        Voir les détails
+                      </Button>
+                    </div>
+                  </Card.Body>
+                </Card>
+              </Col>
+            ))
+          )}
+        </Row>
       </Container>
 
-      <PropertyDetailModal
-        show={showDetailModal}
-        onHide={() => setShowDetailModal(false)}
-        property={selectedProperty}
-      />
+      {/* Modal de détail - gardé 100% identique */}
+      {selectedProperty && (
+        <PropertyDetailModal
+          show={showDetailModal}
+          onHide={() => {
+            setShowDetailModal(false);
+            setSelectedProperty(null);
+          }}
+          property={selectedProperty}
+        />
+      )}
     </div>
   );
 }

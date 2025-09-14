@@ -15,7 +15,7 @@ export default function NotreDemarche() {
       <section 
         className="hero-section"
         style={{
-          backgroundImage: `url('/hero-image2.jpg')`,
+          backgroundImage: `url('/hero-image-demarche.jpg')`,
           backgroundColor: '#D8CBB5',
             backgroundSize: 'fill',
         }}

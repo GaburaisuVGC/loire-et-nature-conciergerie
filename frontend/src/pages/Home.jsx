@@ -42,7 +42,7 @@ export default function Home() {
       <section 
         className="hero-section"
         style={{
-          backgroundImage: `url('/hero-image.jpg')`,
+          backgroundImage: `url('/hero-image-home.jpg')`,
           backgroundColor: '#D8CBB5'
         }}
       >

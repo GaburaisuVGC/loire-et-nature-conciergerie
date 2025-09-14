@@ -775,3 +775,7 @@ body {
 .rounded-custom {
   border-radius: 15px !important;
 }
+
+.bg-blanc:hover {
+  color: var(--blanc) !important;
+}
