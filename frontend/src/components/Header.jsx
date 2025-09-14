@@ -93,13 +93,6 @@ export function Header() {
               </Nav.Link>
               <Nav.Link 
                 as={Link} 
-                to="/about" 
-                className={location.pathname === "/about" ? "active" : ""}
-              >
-                À propos
-              </Nav.Link>
-              <Nav.Link 
-                as={Link} 
                 to="/notre-demarche" 
                 className={location.pathname === "/notre-demarche" ? "active" : ""}
               >
