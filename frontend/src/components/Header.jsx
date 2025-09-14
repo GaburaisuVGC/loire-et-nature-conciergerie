@@ -48,7 +48,7 @@ export function Header() {
         </Container>
       </div>
 
-      <Navbar expand="lg" className="main-nav">
+      <Navbar expand="lg" className="main-nav sticky-desktop-only">
         <Container>
           <Link to="/" className="navbar-brand mx-auto d-md-none">
             <img 
@@ -97,6 +97,13 @@ export function Header() {
                 className={location.pathname === "/about" ? "active" : ""}
               >
                 À propos
+              </Nav.Link>
+              <Nav.Link 
+                as={Link} 
+                to="/notre-demarche" 
+                className={location.pathname === "/notre-demarche" ? "active" : ""}
+              >
+                Notre démarche
               </Nav.Link>
               <Nav.Link 
                 as={Link} 

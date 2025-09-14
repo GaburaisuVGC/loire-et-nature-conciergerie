@@ -2,11 +2,11 @@ import React from "react";
 import { Header } from "./Header";
 import { Footer } from "./Footer";
 
-export function AppLayout({ className = "", children }) {
+export function AppLayout({ children }) {
   return (
-    <div className={`d-flex flex-column min-vh-100 ${className}`}>
+    <div className="min-vh-100 d-flex flex-column">
       <Header />
-      <main className="flex-grow-1" style={{ paddingTop: "0" }}>
+      <main className="flex-grow-1">
         {children}
       </main>
       <Footer />
