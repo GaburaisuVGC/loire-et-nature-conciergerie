@@ -1,8 +1,10 @@
+/* eslint-disable no-unused-vars */
 import React, { useState } from "react";
-import { Container, Row, Col, Card, Form, Button } from "react-bootstrap";
+import { Container, Row, Col, Card, Form, Button, Alert } from "react-bootstrap";
+import contactService from '../services/contactService';
 
 export default function Proprietaires() {
-  const [formData, setFormData] = useState({
+    const [formData, setFormData] = useState({
     nom: '',
     prenom: '',
     email: '',
@@ -12,12 +14,25 @@ export default function Proprietaires() {
     photos: null
   });
 
+  const [showAlert, setShowAlert] = useState(false);
+  const [alertData, setAlertData] = useState({ type: 'success', message: '' });
+  const [loading, setLoading] = useState(false);
+  const [formErrors, setFormErrors] = useState({});
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData(prevState => ({
       ...prevState,
       [name]: value
     }));
+
+    // Effacer l'erreur pour ce champ quand l'utilisateur commence à taper
+    if (formErrors[name]) {
+      setFormErrors(prev => ({
+        ...prev,
+        [name]: ''
+      }));
+    }
   };
 
   const handleFileChange = (e) => {
@@ -27,11 +42,64 @@ export default function Proprietaires() {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Formulaire soumis:', formData);
-    // Ici vous ajouterez la logique d'envoi
-  };
+    setLoading(true);
+    setShowAlert(false);
+    
+    try {
+      // Validation du formulaire
+      const validation = contactService.validateProprietairesForm(formData);
+      
+      if (!validation.isValid) {
+        setFormErrors(validation.errors);
+        setAlertData({
+          type: 'danger',
+          message: 'Veuillez corriger les erreurs dans le formulaire.'
+        });
+        setShowAlert(true);
+        return;
+      }
+
+      // Conversion des données vers le format du service
+      const contactData = contactService.convertProprietairesData(formData);
+      
+      // Envoi du message
+      const result = await contactService.sendContactMessage(contactData);
+      
+      // Succès
+      setAlertData({
+        type: 'success',
+        message: result.message || 'Votre demande a été envoyée avec succès !'
+      });
+      setShowAlert(true);
+      
+      // Reset du formulaire
+      setFormData({
+        nom: '',
+        prenom: '',
+        email: '',
+        telephone: '',
+        adresse: '',
+        message: '',
+        photos: null
+      });
+      setFormErrors({});
+      
+      // Scroll vers le haut
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      
+    } catch (error) {
+      console.error('Erreur lors de l\'envoi:', error);
+      setAlertData({
+        type: 'danger',
+        message: error.message || 'Une erreur est survenue lors de l\'envoi. Veuillez réessayer.'
+      });
+      setShowAlert(true);
+    } finally {
+      setLoading(false);
+    }
+}
 
   const prestations = [
     {
@@ -120,6 +188,25 @@ export default function Proprietaires() {
       </section>
 
       <Container className="py-5">
+        {/* Alert pour les messages */}
+        {showAlert && (
+          <Alert 
+            variant={alertData.type} 
+            dismissible 
+            onClose={() => setShowAlert(false)}
+            className="mb-4"
+          >
+            <h5>
+              {alertData.type === 'success' ? '✅ Message envoyé !' : '❌ Erreur'}
+            </h5>
+            <p className="mb-0">{alertData.message}</p>
+            {alertData.type === 'success' && (
+              <p className="mb-0 mt-2">
+                <small>Merci pour votre intérêt ! Nous étudierons votre demande et vous recontacterons rapidement.</small>
+              </p>
+            )}
+          </Alert>
+        )}
         {/* Section Nos prestations et tarifs */}
         <section className="py-5">
           <div className="section-title">

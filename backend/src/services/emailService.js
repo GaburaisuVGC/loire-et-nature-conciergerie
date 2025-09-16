@@ -37,24 +37,25 @@ class EmailService {
       }
     };
 
-    const provider = process.env.EMAIL_PROVIDER || 'test';
+    const provider = process.env.EMAIL_PROVIDER || 'gmail';
     const config = emailConfig[provider];
 
     if (!config) {
-      console.warn(`Provider email '${provider}' non reconnu, utilisation du mode test`);
-      return nodemailer.createTransporter(emailConfig.test);
+      console.warn(`Provider email '${provider}' non reconnu, utilisation du mode Gmail`);
+      return nodemailer.createTransport(emailConfig.gmail);
     }
 
-    return nodemailer.createTransporter(config);
+    return nodemailer.createTransport(config);
   }
 
   async sendContactNotification(contactData) {
     try {
       const { name, email, phone, subject, message, propertyInterest, timestamp } = contactData;
 
+      // Email à l'administrateur
       const adminEmailOptions = {
-        from: process.env.EMAIL_FROM || 'noreply@loire-nature-conciergerie.fr',
-        to: process.env.ADMIN_EMAIL || 'contact@loire-nature-conciergerie.fr',
+        from: process.env.EMAIL_FROM || process.env.GMAIL_USER || 'loire.et.nature.conciergerie@gmail.com',
+        to: process.env.ADMIN_EMAIL || 'loire.et.nature.conciergerie@gmail.com',
         subject: `[Site Web] Nouveau message: ${subject}`,
         html: this.generateAdminNotificationHTML({
           name,
@@ -67,8 +68,9 @@ class EmailService {
         })
       };
 
+      // Email de confirmation au client
       const clientEmailOptions = {
-        from: process.env.EMAIL_FROM || 'contact@loire-nature-conciergerie.fr',
+        from: process.env.EMAIL_FROM || process.env.GMAIL_USER || 'loire.et.nature.conciergerie@gmail.com',
         to: email,
         subject: 'Confirmation de réception - Loire & Nature Conciergerie',
         html: this.generateClientConfirmationHTML({
@@ -111,20 +113,20 @@ class EmailService {
         <head>
           <meta charset="utf-8">
           <style>
-            body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+            body { font-family: 'Montserrat', Arial, sans-serif; line-height: 1.6; color: #333; }
             .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-            .header { background-color: #6E8C4B; color: white; padding: 20px; text-align: center; }
-            .content { background-color: #f9f9f9; padding: 20px; }
+            .header { background-color: #0C513A; color: white; padding: 20px; text-align: center; }
+            .content { background-color: #FFF1F1; padding: 20px; }
             .field { margin-bottom: 15px; }
-            .field strong { color: #6E8C4B; }
-            .message-content { background-color: white; padding: 15px; border-left: 4px solid #6E8C4B; }
+            .field strong { color: #0C513A; }
+            .message-content { background-color: white; padding: 15px; border-left: 4px solid #0C513A; margin-top: 10px; }
             .footer { text-align: center; padding: 20px; color: #666; font-size: 12px; }
           </style>
         </head>
         <body>
           <div class="container">
             <div class="header">
-              <h1>Loire & Nature Conciergerie</h1>
+              <h1 style="font-family: 'Garamond', serif; font-style: italic; font-weight: bold;">Loire & Nature Conciergerie</h1>
               <p>Nouveau message depuis le site web</p>
             </div>
             
@@ -138,12 +140,12 @@ class EmailService {
               </div>
               
               <div class="field">
-                <strong>Email :</strong> <a href="mailto:${email}">${email}</a>
+                <strong>Email :</strong> <a href="mailto:${email}" style="color: #0C513A;">${email}</a>
               </div>
               
               ${phone ? `
               <div class="field">
-                <strong>Téléphone :</strong> <a href="tel:${phone}">${phone}</a>
+                <strong>Téléphone :</strong> <a href="tel:${phone}" style="color: #0C513A;">${phone}</a>
               </div>
               ` : ''}
               
@@ -175,7 +177,9 @@ class EmailService {
   }
 
   generateClientConfirmationHTML({ name, subject, timestamp }) {
-    const formattedDate = new Date(timestamp).toLocaleDateString('fr-FR');
+    const formattedDate = new Date(timestamp).toLocaleDateString('fr-FR', {
+      timeZone: 'Europe/Paris'
+    });
 
     return `
       <!DOCTYPE html>
@@ -183,19 +187,19 @@ class EmailService {
         <head>
           <meta charset="utf-8">
           <style>
-            body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+            body { font-family: 'Montserrat', Arial, sans-serif; line-height: 1.6; color: #333; }
             .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-            .header { background-color: #6E8C4B; color: white; padding: 20px; text-align: center; }
-            .content { background-color: #f9f9f9; padding: 20px; }
-            .highlight { background-color: #D8CBB5; padding: 15px; border-radius: 5px; margin: 20px 0; }
-            .contact-info { background-color: white; padding: 15px; margin-top: 20px; }
+            .header { background-color: #0C513A; color: white; padding: 20px; text-align: center; }
+            .content { background-color: #FFF1F1; padding: 20px; }
+            .highlight { background-color: #C6A462; color: white; padding: 15px; border-radius: 5px; margin: 20px 0; }
+            .contact-info { background-color: white; padding: 15px; margin-top: 20px; border-radius: 5px; }
             .footer { text-align: center; padding: 20px; color: #666; font-size: 12px; }
           </style>
         </head>
         <body>
           <div class="container">
             <div class="header">
-              <h1>Loire & Nature Conciergerie</h1>
+              <h1 style="font-family: 'Garamond', serif; font-style: italic; font-weight: bold;">Loire & Nature Conciergerie</h1>
               <p>Confirmation de réception</p>
             </div>
             
@@ -206,18 +210,15 @@ class EmailService {
               
               <div class="highlight">
                 <h3>📧 Votre message a été transmis à notre équipe</h3>
-                <p>Nous nous engageons à vous répondre dans les <strong>24 heures ouvrées</strong>.</p>
               </div>
               
               <p>En attendant notre réponse, n'hésitez pas à consulter notre site web pour découvrir nos services ou nous contacter directement :</p>
               
               <div class="contact-info">
-                <h4>Nos coordonnées</h4>
+                <h4 style="color: #0C513A;">Nos coordonnées</h4>
                 <p>
-                  <strong>📞 Téléphone :</strong> +33 (0)2 XX XX XX XX<br>
-                  <strong>📧 Email :</strong> contact@loire-nature-conciergerie.fr<br>
-                  <strong>🏠 Zone d'intervention :</strong> Agglomération Orléanaise<br>
-                  <strong>🕐 Horaires :</strong> Lundi-Vendredi 9h-18h, Samedi 9h-12h
+                  <strong>📞 Téléphone :</strong> 07 43 53 53 31<br>
+                  <strong>📧 Email :</strong> loire.et.nature.conciergerie@gmail.com<br>
                 </p>
               </div>
               
@@ -230,8 +231,7 @@ class EmailService {
             </div>
             
             <div class="footer">
-              <p>Loire & Nature Conciergerie - Services de conciergerie et gestion locative</p>
-              <p>Région Orléanaise, Loiret (45), France</p>
+              <p>Loire & Nature Conciergerie</p>
             </div>
           </div>
         </body>
@@ -253,13 +253,15 @@ class EmailService {
   async sendTestEmail(toEmail) {
     try {
       const testEmailOptions = {
-        from: process.env.EMAIL_FROM || 'test@loire-nature-conciergerie.fr',
+        from: process.env.EMAIL_FROM || process.env.GMAIL_USER || 'loire.et.nature.conciergerie@gmail.com',
         to: toEmail,
         subject: 'Test - Loire & Nature Conciergerie API',
         html: `
-          <h2>Test d'envoi d'email</h2>
-          <p>Si vous recevez ce message, la configuration email fonctionne correctement.</p>
-          <p>Date de test : ${new Date().toLocaleString('fr-FR')}</p>
+          <div style="font-family: 'Montserrat', Arial, sans-serif; padding: 20px; background-color: #FFF1F1;">
+            <h2 style="color: #0C513A; font-family: 'Garamond', serif; font-style: italic;">Test d'envoi d'email</h2>
+            <p>Si vous recevez ce message, la configuration email fonctionne correctement.</p>
+            <p><strong>Date de test :</strong> ${new Date().toLocaleString('fr-FR')}</p>
+          </div>
         `
       };
 

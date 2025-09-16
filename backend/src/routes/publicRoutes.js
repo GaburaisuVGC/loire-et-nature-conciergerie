@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { Property } from '../models/Property.js';
 import { Beds24Service } from '../services/beds24Service.js';
+import emailService from '../services/emailService.js';
 
 const router = Router();
 const beds24Service = new Beds24Service();
@@ -421,15 +422,17 @@ export const getPropertyAvailability = async (req, res, next) => {
  *                   type: string
  */
 export const sendContactMessage = async (req, res, next) => {
-  try {
-    const { name, email, phone, subject, message, propertyInterest } = req.body;
+try {
+    const { name, email, phone, subject, message, propertyInterest, source } = req.body;
 
+    // Validation des champs obligatoires
     if (!name || !email || !message) {
       return res.status(400).json({ 
-        error: 'Les champs nom, email et message sont requis' 
+        error: 'Les champs nom, email et message sont obligatoires' 
       });
     }
 
+    // Validation de l'email
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       return res.status(400).json({ 
@@ -458,7 +461,7 @@ export const sendContactMessage = async (req, res, next) => {
       message: message.trim(),
       propertyInterest: propertyInterest?.trim() || '',
       timestamp: new Date().toISOString(),
-      source: 'website',
+      source: source || 'website',
       status: 'new',
       userAgent: req.get('User-Agent') || 'Unknown',
       ip: req.ip || req.connection.remoteAddress
@@ -476,38 +479,78 @@ export const sendContactMessage = async (req, res, next) => {
     console.log(contactData.message);
     console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
 
-    // TODO: Implémenter l'envoi d'email réel
-    /*
+    // Envoi des emails
     try {
-      const emailService = await import('../services/emailService.js');
-      await emailService.default.sendContactNotification(contactData);
+      await emailService.sendContactNotification(contactData);
       console.log('✅ Emails de notification envoyés avec succès');
     } catch (emailError) {
       console.error('❌ Erreur lors de l\'envoi des emails:', emailError.message);
-      // On continue même si l'email échoue
+      // On continue même si l'email échoue pour ne pas bloquer l'utilisateur
     }
-    */
     
-    // TODO: Sauvegarder en base de données
+    // TODO: Sauvegarder en base de données si nécessaire
     // await ContactMessage.create(contactData);
 
     res.json({
       success: true,
       message: 'Votre message a été envoyé avec succès. Nous vous recontacterons dans les plus brefs délais.',
-      contactId: contactData.id,
-      receivedAt: contactData.timestamp
+      contactId: contactData.id
     });
 
   } catch (error) {
-    console.error('❌ Erreur lors du traitement du message de contact:', error);
-    next(error);
+    console.error('❌ Erreur lors du traitement du contact:', error);
+    res.status(500).json({
+      error: 'Une erreur interne s\'est produite. Veuillez réessayer.'
+    });
   }
 };
+
+export const testEmail = async (req, res) => {
+try {
+    const { toEmail } = req.body;
+    
+    if (!toEmail) {
+      return res.status(400).json({ error: 'Email de destination requis' });
+    }
+
+    const result = await emailService.sendTestEmail(toEmail);
+    res.json({
+      success: true,
+      message: 'Email de test envoyé avec succès',
+      messageId: result.messageId
+    });
+
+  } catch (error) {
+    console.error('Erreur lors du test d\'email:', error);
+    res.status(500).json({
+      error: 'Erreur lors de l\'envoi de l\'email de test',
+      details: error.message
+    });
+  }
+}
+
+export const emailStatus = async (req, res) => {
+   try {
+    const isValid = await emailService.testEmailConfiguration();
+    res.json({
+      emailConfigured: isValid,
+      provider: process.env.EMAIL_PROVIDER || 'test',
+      adminEmail: process.env.ADMIN_EMAIL || 'loire.et.nature.conciergerie@gmail.com'
+    });
+  } catch (error) {
+    res.status(500).json({
+      emailConfigured: false,
+      error: error.message
+    });
+  }
+}
 
 router.get('/properties', getPublicProperties);
 router.get('/properties/:id', getPublicProperty);
 router.get('/properties/:id/availability', getPropertyAvailability);
 router.post('/contact', sendContactMessage);
+router.post('/test-email', testEmail);
+router.get('/email-status', emailStatus);
 
 router.get('/health', (req, res) => {
   res.json({
