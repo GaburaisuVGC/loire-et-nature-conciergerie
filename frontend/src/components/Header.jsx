@@ -1,9 +1,14 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Navbar, Nav, Container } from "react-bootstrap";
+import { Navbar, Nav, Container, Dropdown } from "react-bootstrap";
 
 export function Header() {
   const location = useLocation();
+  const [showDropdown, setShowDropdown] = useState(false);
+
+  const isReservationActive = () => {
+    return ['/reservations', '/proprietaires', '/partenaires'].includes(location.pathname);
+  };
 
   return (
     <div className="header-wrapper">
@@ -98,13 +103,62 @@ export function Header() {
               >
                 Notre démarche
               </Nav.Link>
-              <Nav.Link 
-                as={Link} 
-                to="/reservations" 
-                className={location.pathname === "/reservations" ? "active" : ""}
+              
+              {/* Dropdown Réservations */}
+              <Dropdown 
+                show={showDropdown} 
+                onToggle={setShowDropdown}
+                className="nav-dropdown"
               >
-                Réservations
-              </Nav.Link>
+                <div className={`nav-link-dropdown ${isReservationActive() ? "active" : ""}`}>
+                  <Link 
+                    to="/reservations" 
+                    style={{ textDecoration: 'none', color: 'inherit' }}
+                    className="me-1"
+                  >
+                    Réservations
+                  </Link>
+                  <i 
+                    className="bi bi-chevron-down dropdown-arrow"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      e.preventDefault();
+                      setShowDropdown(!showDropdown);
+                    }}
+                    style={{ 
+                      cursor: 'pointer',
+                      fontSize: '0.8rem',
+                      transition: 'transform 0.2s ease',
+                      transform: showDropdown ? 'rotate(180deg)' : 'rotate(0deg)'
+                    }}
+                  ></i>
+                </div>
+
+                <Dropdown.Menu className="dropdown-menu-custom">
+                  <Dropdown.Item 
+                    as={Link} 
+                    to="/reservations"
+                    className={location.pathname === "/reservations" ? "active" : ""}
+                  >
+                    Réservations
+                  </Dropdown.Item>
+                  <Dropdown.Item 
+                    as={Link} 
+                    to="/proprietaires"
+                    className={location.pathname === "/proprietaires" ? "active" : ""}
+                  >
+                    Propriétaires
+                  </Dropdown.Item>
+                  <Dropdown.Item 
+                    as={Link} 
+                    to="/partenaires"
+                    className={location.pathname === "/partenaires" ? "active" : ""}
+                  >
+                    Partenaires
+                  </Dropdown.Item>
+                </Dropdown.Menu>
+              </Dropdown>
+
               <Nav.Link 
                 as={Link} 
                 to="/contact" 

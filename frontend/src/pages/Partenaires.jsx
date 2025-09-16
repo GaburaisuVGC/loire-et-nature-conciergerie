@@ -1,0 +1,327 @@
+import React, { useState } from "react";
+import { Container, Row, Col, Card, Form, Button } from "react-bootstrap";
+
+export default function Partenaires() {
+  const [formData, setFormData] = useState({
+    nom: '',
+    prenom: '',
+    entreprise: '',
+    poste: '',
+    email: '',
+    telephone: '',
+    ville: '',
+    siteInternet: '',
+    message: '',
+    pieceJointe: null
+  });
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prevState => ({
+      ...prevState,
+      [name]: value
+    }));
+  };
+
+  const handleFileChange = (e) => {
+    setFormData(prevState => ({
+      ...prevState,
+      pieceJointe: e.target.files[0]
+    }));
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log('Formulaire partenaires soumis:', formData);
+    // Ici vous ajouterez la logique d'envoi
+  };
+
+  return (
+    <div>
+      {/* Hero Section */}
+      <section 
+        className="hero-section"
+        style={{
+          backgroundImage: `url('/hero-image-partenaires.png')`,
+          backgroundColor: 'var(--rose-pale)',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          minHeight: '60vh'
+        }}
+      >
+        <div className="hero-overlay"></div>
+        <Container>
+          <div className="hero-content">
+            <h1 className="font-garamond text-vert hero-title" style={{ fontStyle: 'italic', fontWeight: 'bold' }}>
+              Artisans - Professionnels - Prestataires de Services
+            </h1>
+          </div>
+        </Container>
+      </section>
+
+      <Container className="py-5">
+        {/* Section texte principal */}
+        <section className="py-5">
+          <Row className="justify-content-center">
+            <Col lg={10}>
+              <div className="partenaires-content">
+                <p className="mb-4" style={{ fontSize: '1.1rem', lineHeight: '1.8' }}>
+                  Chez Loire & Nature, nous croyons que la réussite d'un séjour passe aussi par les rencontres et les
+                  découvertes locales.
+                </p>
+                
+                <p className="mb-4" style={{ fontSize: '1.1rem', lineHeight: '1.8' }}>
+                  C'est pourquoi nous avons choisi de travailler main dans la main avec des artisans, producteurs et
+                  prestataires passionnés.
+                </p>
+
+                <h3 className="font-garamond text-vert mt-5 mb-4" style={{ fontWeight: 'bold', fontStyle: 'italic' }}>
+                  Pourquoi devenir partenaire ?
+                </h3>
+
+                <div className="avantages-partenaires">
+                  <div className="avantage-item mb-4">
+                    <h5 className="text-vert font-weight-bold">Valoriser votre savoir-faire :</h5>
+                    <p style={{ fontSize: '1rem', lineHeight: '1.7' }}>
+                      vos produits et services sont mis en avant auprès de voyageurs
+                      en quête d'authenticité.
+                    </p>
+                  </div>
+
+                  <div className="avantage-item mb-4">
+                    <h5 className="text-vert font-weight-bold">Gagner en visibilité :</h5>
+                    <p style={{ fontSize: '1rem', lineHeight: '1.7' }}>
+                      nous intégrons nos partenaires dans nos paniers d'accueil,
+                      nos recommandations et sur nos supports de communication.
+                    </p>
+                  </div>
+
+                  <div className="avantage-item mb-4">
+                    <h5 className="text-vert font-weight-bold">Développer une économie locale durable :</h5>
+                    <p style={{ fontSize: '1rem', lineHeight: '1.7' }}>
+                      ensemble, nous faisons rayonner notre région
+                      et soutenons une consommation responsable.
+                    </p>
+                  </div>
+
+                  <div className="avantage-item mb-4">
+                    <h5 className="text-vert font-weight-bold">Créer une relation de confiance :</h5>
+                    <p style={{ fontSize: '1rem', lineHeight: '1.7' }}>
+                      nous privilégions des partenariats humains,
+                      durables et fondés sur des valeurs communes.
+                    </p>
+                  </div>
+                </div>
+
+                <h3 className="font-garamond text-vert mt-5 mb-4" style={{ fontWeight: 'bold', fontStyle: 'italic' }}>
+                  Une vitrine pour vos produits et services
+                </h3>
+
+                <p className="mb-4" style={{ fontSize: '1.1rem', lineHeight: '1.8' }}>
+                  Qu'il s'agisse de produits du terroir, de prestations de bien-être, d'activités nature,
+                  ou encore de services techniques (ménage, entretien, maintenance),
+                  nous mettons en avant vos talents auprès d'une clientèle sensible à l'authenticité et au local.
+                </p>
+
+                <p className="mb-5" style={{ fontSize: '1.1rem', lineHeight: '1.8', fontWeight: '500' }}>
+                  En rejoignant Loire & Nature, vous devenez bien plus qu'un prestataire : 
+                  vous devenez un acteur clé de l'expérience voyageur.
+                </p>
+              </div>
+            </Col>
+          </Row>
+        </section>
+
+        {/* Formulaire de contact */}
+        <section className="py-5">
+          <div className="section-title">
+            <h2 className="font-garamond text-vert" style={{ fontWeight: 'bold', fontStyle: 'italic' }}>
+              Formulaire de contact
+            </h2>
+          </div>
+
+          <Row className="justify-content-center">
+            <Col lg={10}>
+              <Card className="shadow border-0">
+                <Card.Body className="p-5">
+                  <Form onSubmit={handleSubmit}>
+                    <Row className="mb-3">
+                      <Col md={6}>
+                        <Form.Group>
+                          <Form.Label>Votre nom</Form.Label>
+                          <Form.Control
+                            type="text"
+                            name="nom"
+                            value={formData.nom}
+                            onChange={handleInputChange}
+                            required
+                          />
+                        </Form.Group>
+                      </Col>
+                      <Col md={6}>
+                        <Form.Group>
+                          <Form.Label>Votre prénom</Form.Label>
+                          <Form.Control
+                            type="text"
+                            name="prenom"
+                            value={formData.prenom}
+                            onChange={handleInputChange}
+                            required
+                          />
+                        </Form.Group>
+                      </Col>
+                    </Row>
+
+                    <Row className="mb-3">
+                      <Col md={6}>
+                        <Form.Group>
+                          <Form.Label>Entreprise</Form.Label>
+                          <Form.Control
+                            type="text"
+                            name="entreprise"
+                            value={formData.entreprise}
+                            onChange={handleInputChange}
+                            required
+                          />
+                        </Form.Group>
+                      </Col>
+                      <Col md={6}>
+                        <Form.Group>
+                          <Form.Label>Poste</Form.Label>
+                          <Form.Control
+                            type="text"
+                            name="poste"
+                            value={formData.poste}
+                            onChange={handleInputChange}
+                            required
+                          />
+                        </Form.Group>
+                      </Col>
+                    </Row>
+
+                    <Row className="mb-3">
+                      <Col md={6}>
+                        <Form.Group>
+                          <Form.Label>Email</Form.Label>
+                          <Form.Control
+                            type="email"
+                            name="email"
+                            value={formData.email}
+                            onChange={handleInputChange}
+                            required
+                          />
+                        </Form.Group>
+                      </Col>
+                      <Col md={6}>
+                        <Form.Group>
+                          <Form.Label>Téléphone</Form.Label>
+                          <Form.Control
+                            type="tel"
+                            name="telephone"
+                            value={formData.telephone}
+                            onChange={handleInputChange}
+                            required
+                          />
+                        </Form.Group>
+                      </Col>
+                    </Row>
+
+                    <Row className="mb-3">
+                      <Col md={6}>
+                        <Form.Group>
+                          <Form.Label>Ville</Form.Label>
+                          <Form.Control
+                            type="text"
+                            name="ville"
+                            value={formData.ville}
+                            onChange={handleInputChange}
+                            required
+                          />
+                        </Form.Group>
+                      </Col>
+                      <Col md={6}>
+                        <Form.Group>
+                          <Form.Label>Site Internet</Form.Label>
+                          <Form.Control
+                            type="url"
+                            name="siteInternet"
+                            value={formData.siteInternet}
+                            onChange={handleInputChange}
+                            placeholder="https://..."
+                          />
+                        </Form.Group>
+                      </Col>
+                    </Row>
+
+                    <Row className="mb-4">
+                      <Col>
+                        <Form.Group>
+                          <Form.Label>Dites nous en plus !</Form.Label>
+                          <Form.Control
+                            as="textarea"
+                            rows={4}
+                            name="message"
+                            value={formData.message}
+                            onChange={handleInputChange}
+                            placeholder="Présentez-nous votre entreprise, vos services, vos produits..."
+                            required
+                          />
+                        </Form.Group>
+                      </Col>
+                    </Row>
+
+                    <Row className="align-items-end">
+                      <Col md={6}>
+                        <Form.Group className="mb-3">
+                          <Form.Label>Pièce jointe</Form.Label>
+                          <Form.Text className="text-muted fst-italic d-block">
+                            Taille maximal du fichier à 20Mo
+                          </Form.Text>
+                          <div className="mt-2">
+                            <label htmlFor="pieceJointe" className="btn btn-outline-secondary">
+                              <i className="bi bi-paperclip me-2"></i>
+                              Joindre un fichier
+                            </label>
+                            <input
+                              type="file"
+                              id="pieceJointe"
+                              name="pieceJointe"
+                              onChange={handleFileChange}
+                              accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
+                              style={{ display: 'none' }}
+                            />
+                            {formData.pieceJointe && (
+                              <div className="mt-2">
+                                <small className="text-success">
+                                  Fichier sélectionné: {formData.pieceJointe.name}
+                                </small>
+                              </div>
+                            )}
+                          </div>
+                        </Form.Group>
+                      </Col>
+                      <Col md={6} className="text-end">
+                        <Button 
+                          type="submit" 
+                          className="btn-custom-vert px-5 py-2"
+                          style={{ 
+                            backgroundColor: 'var(--vert-loire)',
+                            color: 'white',
+                            border: 'none',
+                            borderRadius: '25px'
+                          }}
+                        >
+                          Envoyer
+                        </Button>
+                      </Col>
+                    </Row>
+                  </Form>
+                </Card.Body>
+              </Card>
+            </Col>
+          </Row>
+        </section>
+      </Container>
+    </div>
+  );
+}

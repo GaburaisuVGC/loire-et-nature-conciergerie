@@ -118,9 +118,12 @@ body {
   z-index: 1000;
 }
 
-.sticky-desktop-only {
-  position: sticky;
-  top: 0;
+/* Comportement sticky pour desktop seulement */
+@media (min-width: 769px) {
+  .sticky-desktop-only {
+    position: sticky;
+    top: 0;
+  }
 }
 
 @media (max-width: 768px) {
@@ -145,10 +148,58 @@ body {
   font-weight: 500;
   padding: 0.75rem 1.25rem;
   transition: color 0.3s ease;
+  cursor: pointer;
 }
 
 .main-nav .navbar-nav .nav-link:hover,
 .main-nav .navbar-nav .nav-link.active {
+  color: var(--vert-loire);
+}
+
+/* Styles pour le dropdown */
+.nav-dropdown {
+  position: relative;
+}
+
+.nav-link-dropdown {
+  display: flex;
+  align-items: center;
+  color: var(--gris-fonce) !important;
+  font-weight: 500;
+  padding: 0.75rem 1.25rem;
+  transition: color 0.3s ease;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.nav-link-dropdown:hover,
+.nav-link-dropdown.active {
+  color: var(--vert-loire) !important;
+}
+
+.dropdown-arrow {
+  margin-left: 0.5rem;
+  transition: transform 0.2s ease;
+}
+
+.dropdown-menu-custom {
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  padding: 0.5rem 0;
+  margin-top: 0.5rem;
+}
+
+.dropdown-menu-custom .dropdown-item {
+  color: var(--gris-fonce);
+  padding: 0.5rem 1.5rem;
+  transition: all 0.2s ease;
+  font-weight: 500;
+}
+
+.dropdown-menu-custom .dropdown-item:hover,
+.dropdown-menu-custom .dropdown-item.active {
+  background-color: var(--rose-pale);
   color: var(--vert-loire);
 }
 
@@ -337,6 +388,10 @@ body {
   font-style: italic;
   font-size: clamp(2rem, 4vw, 3rem);
   margin-bottom: 20px;
+}
+
+.hero-text {
+  color: var(--gris-fonce);
 }
 
 /* Buttons */
@@ -658,6 +713,54 @@ body {
   margin-bottom: 1rem;
 }
 
+/* Cards pour prestations */
+.prestation-card {
+  transition: all 0.3s ease;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.prestation-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.prestation-card .icon-container {
+  padding: 20px;
+  background: linear-gradient(135deg, var(--rose-pale) 0%, rgba(255, 241, 241, 0.8) 100%);
+  border-radius: 50%;
+  width: 80px;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+}
+
+/* Cards pour offres */
+.offre-card {
+  transition: all 0.3s ease;
+  border-radius: 12px;
+  background: linear-gradient(135deg, var(--blanc) 0%, var(--rose-pale) 100%);
+  border-left: 4px solid var(--vert-loire);
+}
+
+.offre-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(12, 81, 58, 0.15);
+}
+
+/* Styles pour la page Partenaires */
+.partenaires-content {
+  text-align: left;
+}
+
+.avantages-partenaires .avantage-item h5 {
+  color: var(--vert-loire);
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
   .hero-content .subtitle-italic {
@@ -711,6 +814,24 @@ body {
   .gladys-content {
     text-align: center;
   }
+
+  .hero-content {
+    padding: 30px 15px;
+  }
+  
+  .hero-title {
+    font-size: 2rem;
+  }
+  
+  .prestation-card .icon-container {
+    width: 60px;
+    height: 60px;
+    padding: 15px;
+  }
+  
+  .prestation-card .icon-container i {
+    font-size: 2rem !important;
+  }
 }
 
 @media (max-width: 576px) {
@@ -740,6 +861,14 @@ body {
   .quality-item {
     padding: 1.5rem;
   }
+
+  .hero-title {
+    font-size: 1.5rem;
+  }
+  
+  .hero-content p {
+    font-size: 1rem;
+  }
 }
 
 /* Animations */
@@ -756,6 +885,11 @@ body {
 
 .fade-in-up {
   animation: fadeInUp 0.8s ease forwards;
+}
+
+.prestation-card,
+.offre-card {
+  animation: fadeInUp 0.6s ease forwards;
 }
 
 /* Utilities */
@@ -778,4 +912,21 @@ body {
 
 .bg-blanc:hover {
   color: var(--blanc) !important;
+}
+
+/* Styles pour les formulaires */
+.form-control:focus {
+  border-color: var(--vert-loire);
+  box-shadow: 0 0 0 0.2rem rgba(12, 81, 58, 0.25);
+}
+
+.btn-outline-secondary {
+  border-color: var(--vert-loire);
+  color: var(--vert-loire);
+}
+
+.btn-outline-secondary:hover {
+  background-color: var(--vert-loire);
+  border-color: var(--vert-loire);
+  color: var(--blanc);
 }

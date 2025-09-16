@@ -4,6 +4,8 @@ import { AppLayout } from "./components/Layout";
 import Home from "./pages/Home";
 import NotreDemarche from "./pages/NotreDemarche";
 import Reservations from "./pages/Reservations";
+import Proprietaires from "./pages/Proprietaires";
+import Partenaires from "./pages/Partenaires";
 import Contact from "./pages/Contact";
 import Login from "./pages/Login";
 import Admin from "./pages/Admin";
@@ -18,6 +20,8 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/notre-demarche" element={<NotreDemarche />} />
           <Route path="/reservations" element={<Reservations />} />
+          <Route path="/proprietaires" element={<Proprietaires />} />
+          <Route path="/partenaires" element={<Partenaires />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/login" element={<Login />} />
           <Route 
