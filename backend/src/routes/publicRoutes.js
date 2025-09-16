@@ -2,6 +2,7 @@ import { Router } from 'express';
 import { Property } from '../models/Property.js';
 import { Beds24Service } from '../services/beds24Service.js';
 import emailService from '../services/emailService.js';
+import { uploadMultiple, cleanupFiles } from '../middlewares/uploadMiddleware.js';
 
 const router = Router();
 const beds24Service = new Beds24Service();
@@ -361,6 +362,27 @@ export const getPropertyAvailability = async (req, res, next) => {
   }
 };
 
+// Middleware pour gérer les erreurs d'upload
+const handleUploadError = (err, req, res, next) => {
+  if (err) {
+    console.error('Erreur d\'upload:', err);
+    if (err.code === 'LIMIT_FILE_SIZE') {
+      return res.status(400).json({ 
+        error: 'Fichier trop volumineux. Taille maximale: 20MB par fichier' 
+      });
+    }
+    if (err.code === 'LIMIT_FILE_COUNT') {
+      return res.status(400).json({ 
+        error: 'Trop de fichiers. Maximum 5 fichiers autorisés' 
+      });
+    }
+    return res.status(400).json({ 
+      error: err.message || 'Erreur lors de l\'upload du fichier' 
+      });
+  }
+  next();
+};
+
 /**
  * @swagger
  * /public/contact:
@@ -421,32 +443,53 @@ export const getPropertyAvailability = async (req, res, next) => {
  *                 error:
  *                   type: string
  */
-export const sendContactMessage = async (req, res, next) => {
-try {
-    const { name, email, phone, subject, message, propertyInterest, source } = req.body;
+export const sendContactMessage = async (req, res) => {
+  try {
+    const { 
+      name, 
+      email, 
+      phone, 
+      subject, 
+      message, 
+      propertyInterest,
+      source 
+    } = req.body;
 
-    // Validation des champs obligatoires
+    // Validation des champs requis
     if (!name || !email || !message) {
+      // Si des fichiers ont été uploadés, les supprimer
+      if (req.files) {
+        cleanupFiles(req.files);
+      }
       return res.status(400).json({ 
-        error: 'Les champs nom, email et message sont obligatoires' 
+        error: 'Les champs nom, email et message sont requis' 
       });
     }
 
     // Validation de l'email
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
+      if (req.files) {
+        cleanupFiles(req.files);
+      }
       return res.status(400).json({ 
         error: 'Format d\'email invalide' 
       });
     }
 
     if (name.trim().length < 2) {
+      if (req.files) {
+        cleanupFiles(req.files);
+      }
       return res.status(400).json({ 
         error: 'Le nom doit contenir au moins 2 caractères' 
       });
     }
 
     if (message.trim().length < 10) {
+      if (req.files) {
+        cleanupFiles(req.files);
+      }
       return res.status(400).json({ 
         error: 'Le message doit contenir au moins 10 caractères' 
       });
@@ -464,7 +507,8 @@ try {
       source: source || 'website',
       status: 'new',
       userAgent: req.get('User-Agent') || 'Unknown',
-      ip: req.ip || req.connection.remoteAddress
+      ip: req.ip || req.connection.remoteAddress,
+      attachments: req.files || [] // Ajouter les fichiers uploadés
     };
 
     // Log du message reçu
@@ -475,16 +519,27 @@ try {
     console.log(`📋 Sujet: ${contactData.subject}`);
     console.log(`🏠 Propriété d'intérêt: ${contactData.propertyInterest || 'Aucune'}`);
     console.log(`📅 Reçu le: ${new Date(contactData.timestamp).toLocaleString('fr-FR')}`);
+    if (contactData.attachments.length > 0) {
+      console.log(`📎 Pièces jointes: ${contactData.attachments.length} fichier(s)`);
+      contactData.attachments.forEach(file => {
+        console.log(`   - ${file.originalname} (${(file.size / 1024).toFixed(2)} KB)`);
+      });
+    }
     console.log(`💬 Message:`);
     console.log(contactData.message);
     console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
 
-    // Envoi des emails
+    // Envoi des emails avec pièces jointes
     try {
       await emailService.sendContactNotification(contactData);
       console.log('✅ Emails de notification envoyés avec succès');
+      
+      // Nettoyer les fichiers temporaires après l'envoi de l'email
+      cleanupFiles(contactData.attachments);
     } catch (emailError) {
       console.error('❌ Erreur lors de l\'envoi des emails:', emailError.message);
+      // Nettoyer les fichiers même en cas d'erreur
+      cleanupFiles(contactData.attachments);
       // On continue même si l'email échoue pour ne pas bloquer l'utilisateur
     }
     
@@ -499,6 +554,10 @@ try {
 
   } catch (error) {
     console.error('❌ Erreur lors du traitement du contact:', error);
+    // Nettoyer les fichiers en cas d'erreur
+    if (req.files) {
+      cleanupFiles(req.files);
+    }
     res.status(500).json({
       error: 'Une erreur interne s\'est produite. Veuillez réessayer.'
     });
@@ -506,7 +565,7 @@ try {
 };
 
 export const testEmail = async (req, res) => {
-try {
+  try {
     const { toEmail } = req.body;
     
     if (!toEmail) {
@@ -530,7 +589,7 @@ try {
 }
 
 export const emailStatus = async (req, res) => {
-   try {
+  try {
     const isValid = await emailService.testEmailConfiguration();
     res.json({
       emailConfigured: isValid,
@@ -548,7 +607,7 @@ export const emailStatus = async (req, res) => {
 router.get('/properties', getPublicProperties);
 router.get('/properties/:id', getPublicProperty);
 router.get('/properties/:id/availability', getPropertyAvailability);
-router.post('/contact', sendContactMessage);
+router.post('/contact', uploadMultiple, handleUploadError, sendContactMessage);
 router.post('/test-email', testEmail);
 router.get('/email-status', emailStatus);
 

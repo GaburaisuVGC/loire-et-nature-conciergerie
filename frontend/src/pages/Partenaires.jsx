@@ -4,7 +4,7 @@ import { Container, Row, Col, Card, Form, Button, Alert } from "react-bootstrap"
 import contactService from '../services/contactService';
 
 export default function Partenaires() {
-  const [formData, setFormData] = useState({
+   const [formData, setFormData] = useState({
     nom: '',
     prenom: '',
     entreprise: '',
@@ -14,7 +14,7 @@ export default function Partenaires() {
     ville: '',
     siteInternet: '',
     message: '',
-    pieceJointe: null
+    pieceJointe: []
   });
 
   const [showAlert, setShowAlert] = useState(false);
@@ -39,10 +39,30 @@ export default function Partenaires() {
   };
 
   const handleFileChange = (e) => {
+    const files = Array.from(e.target.files);
+    
+    // Limiter à 5 fichiers maximum
+    if (files.length > 5) {
+      setAlertData({
+        type: 'warning',
+        message: 'Vous ne pouvez joindre que 5 fichiers maximum.'
+      });
+      setShowAlert(true);
+      return;
+    }
+    
     setFormData(prevState => ({
       ...prevState,
-      pieceJointe: e.target.files[0]
+      pieceJointe: files
     }));
+    
+    // Effacer l'erreur pour ce champ
+    if (formErrors.pieceJointe) {
+      setFormErrors(prev => ({
+        ...prev,
+        pieceJointe: ''
+      }));
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -65,10 +85,10 @@ export default function Partenaires() {
       }
 
       // Conversion des données vers le format du service
-      const contactData = contactService.convertPartenairesData(formData);
+      const contactData = contactService.convertPartenairesData(formData, formData.pieceJointe);
       
-      // Envoi du message
-      const result = await contactService.sendContactMessage(contactData);
+      // Envoi du message avec les fichiers
+      const result = await contactService.sendContactMessage(contactData, formData.pieceJointe);
       
       // Succès
       setAlertData({
@@ -88,9 +108,15 @@ export default function Partenaires() {
         ville: '',
         siteInternet: '',
         message: '',
-        pieceJointe: null
+        pieceJointe: []
       });
       setFormErrors({});
+      
+      // Reset le champ file input
+      const fileInput = document.getElementById('pieceJointe');
+      if (fileInput) {
+        fileInput.value = '';
+      }
       
       // Scroll vers le haut
       window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -363,14 +389,14 @@ export default function Partenaires() {
                     <Row className="align-items-end">
                       <Col md={6}>
                         <Form.Group className="mb-3">
-                          <Form.Label>Pièce jointe</Form.Label>
+                          <Form.Label>Pièces jointes</Form.Label>
                           <Form.Text className="text-muted fst-italic d-block">
-                            Taille maximal du fichier à 20Mo
+                            Maximum 5 fichiers, 20Mo par fichier (PDF, Word, images)
                           </Form.Text>
                           <div className="mt-2">
                             <label htmlFor="pieceJointe" className="btn btn-outline-secondary">
                               <i className="bi bi-paperclip me-2"></i>
-                              Joindre un fichier
+                              Joindre des fichiers
                             </label>
                             <input
                               type="file"
@@ -378,13 +404,24 @@ export default function Partenaires() {
                               name="pieceJointe"
                               onChange={handleFileChange}
                               accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
+                              multiple
                               style={{ display: 'none' }}
                             />
-                            {formData.pieceJointe && (
+                            {formData.pieceJointe && formData.pieceJointe.length > 0 && (
                               <div className="mt-2">
                                 <small className="text-success">
-                                  Fichier sélectionné: {formData.pieceJointe.name}
+                                  {formData.pieceJointe.length} fichier(s) sélectionné(s):
+                                  <ul className="mb-0">
+                                    {Array.from(formData.pieceJointe).map((file, index) => (
+                                      <li key={index}>{file.name}</li>
+                                    ))}
+                                  </ul>
                                 </small>
+                              </div>
+                            )}
+                            {formErrors.pieceJointe && (
+                              <div className="text-danger small mt-1">
+                                {formErrors.pieceJointe}
                               </div>
                             )}
                           </div>

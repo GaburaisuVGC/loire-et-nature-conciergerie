@@ -4,14 +4,14 @@ import { Container, Row, Col, Card, Form, Button, Alert } from "react-bootstrap"
 import contactService from '../services/contactService';
 
 export default function Proprietaires() {
-    const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState({
     nom: '',
     prenom: '',
     email: '',
     telephone: '',
     adresse: '',
     message: '',
-    photos: null
+    photos: []
   });
 
   const [showAlert, setShowAlert] = useState(false);
@@ -36,10 +36,30 @@ export default function Proprietaires() {
   };
 
   const handleFileChange = (e) => {
+    const files = Array.from(e.target.files);
+    
+    // Limiter à 5 fichiers maximum
+    if (files.length > 5) {
+      setAlertData({
+        type: 'warning',
+        message: 'Vous ne pouvez joindre que 5 fichiers maximum.'
+      });
+      setShowAlert(true);
+      return;
+    }
+    
     setFormData(prevState => ({
       ...prevState,
-      photos: e.target.files[0]
+      photos: files
     }));
+    
+    // Effacer l'erreur pour ce champ
+    if (formErrors.photos) {
+      setFormErrors(prev => ({
+        ...prev,
+        photos: ''
+      }));
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -62,10 +82,10 @@ export default function Proprietaires() {
       }
 
       // Conversion des données vers le format du service
-      const contactData = contactService.convertProprietairesData(formData);
+      const contactData = contactService.convertProprietairesData(formData, formData.photos);
       
-      // Envoi du message
-      const result = await contactService.sendContactMessage(contactData);
+      // Envoi du message avec les fichiers
+      const result = await contactService.sendContactMessage(contactData, formData.photos);
       
       // Succès
       setAlertData({
@@ -82,9 +102,15 @@ export default function Proprietaires() {
         telephone: '',
         adresse: '',
         message: '',
-        photos: null
+        photos: []
       });
       setFormErrors({});
+      
+      // Reset le champ file input
+      const fileInput = document.getElementById('photos');
+      if (fileInput) {
+        fileInput.value = '';
+      }
       
       // Scroll vers le haut
       window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -99,7 +125,7 @@ export default function Proprietaires() {
     } finally {
       setLoading(false);
     }
-}
+  };
 
   const prestations = [
     {
@@ -371,12 +397,12 @@ export default function Proprietaires() {
                         <Form.Group className="mb-3">
                           <Form.Label>Photos du logement</Form.Label>
                           <Form.Text className="text-muted fst-italic d-block">
-                            Taille maximal du fichier à 20Mo
+                            Maximum 5 fichiers, 20Mo par fichier
                           </Form.Text>
                           <div className="mt-2">
                             <label htmlFor="photos" className="btn btn-outline-secondary">
                               <i className="bi bi-paperclip me-2"></i>
-                              Joindre un fichier
+                              Joindre des fichiers
                             </label>
                             <input
                               type="file"
@@ -387,11 +413,21 @@ export default function Proprietaires() {
                               multiple
                               style={{ display: 'none' }}
                             />
-                            {formData.photos && (
+                            {formData.photos && formData.photos.length > 0 && (
                               <div className="mt-2">
                                 <small className="text-success">
-                                  Fichier sélectionné: {formData.photos.name}
+                                  {formData.photos.length} fichier(s) sélectionné(s):
+                                  <ul className="mb-0">
+                                    {Array.from(formData.photos).map((file, index) => (
+                                      <li key={index}>{file.name}</li>
+                                    ))}
+                                  </ul>
                                 </small>
+                              </div>
+                            )}
+                            {formErrors.photos && (
+                              <div className="text-danger small mt-1">
+                                {formErrors.photos}
                               </div>
                             )}
                           </div>

@@ -48,6 +48,7 @@ export default function Reservations() {
 
   useEffect(() => {
     applyFilters();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [properties, dateArrivee, dateDepart, nuits, adultes, enfants]);
 
   // Calcul automatique du nombre de nuits

@@ -3,22 +3,32 @@ import axios from 'axios';
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
 
 class ContactService {
-  async sendContactMessage(contactData) {
+  async sendContactMessage(contactData, files = []) {
     try {
-      const response = await axios.post(`${API_BASE_URL}/public/contact`, {
-        name: contactData.name,
-        email: contactData.email,
-        phone: contactData.phone || '',
-        subject: contactData.subject || 'Contact général',
-        message: contactData.message,
-        propertyInterest: contactData.propertyInterest || '',
-        timestamp: new Date().toISOString(),
-        source: contactData.source || 'website'
-      }, {
+      // Créer un FormData pour envoyer les données et les fichiers
+      const formData = new FormData();
+      
+      // Ajouter les données textuelles
+      formData.append('name', contactData.name);
+      formData.append('email', contactData.email);
+      formData.append('phone', contactData.phone || '');
+      formData.append('subject', contactData.subject || 'Contact général');
+      formData.append('message', contactData.message);
+      formData.append('propertyInterest', contactData.propertyInterest || '');
+      formData.append('source', contactData.source || 'website');
+      
+      // Ajouter les fichiers s'il y en a
+      if (files && files.length > 0) {
+        files.forEach((file) => {
+          formData.append('attachments', file);
+        });
+      }
+      
+      const response = await axios.post(`${API_BASE_URL}/public/contact`, formData, {
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'multipart/form-data'
         },
-        timeout: 10000 // timeout de 10 secondes
+        timeout: 30000 // timeout de 30 secondes pour l'upload de fichiers
       });
       
       return response.data;
