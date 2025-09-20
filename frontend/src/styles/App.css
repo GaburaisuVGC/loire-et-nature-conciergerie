@@ -8,6 +8,7 @@
   --blanc: #FFFFFF;
   --noir: #000000;
   --gris-fonce: #333333;
+  --gris: #4b4b4b;
 }
 
 * {
@@ -242,7 +243,7 @@ body {
 
 /* Footer */
 .footer {
-  background-color: var(--gris-fonce);
+  background-color: var(--gris);
   color: var(--blanc);
   padding: 40px 0 20px;
   margin-top: 60px;
@@ -250,7 +251,7 @@ body {
 }
 
 .footer .footer-logo {
-  height: 20vh;
+  height: 14vh;
   width: auto;
   margin-bottom: 20px;
   cursor: pointer;
@@ -362,7 +363,7 @@ body {
   font-weight: 700;
   font-style: italic;
   color: var(--vert-loire);
-  font-size: 1.6rem;
+  font-size: clamp(2rem, 4vw, 3rem);
   margin-bottom: 10px;
   display: inline-block;
 }
@@ -371,7 +372,7 @@ body {
   font-family: 'EB Garamond', serif;
   font-weight: 700;
   color: var(--vert-loire);
-  font-size: 1.5rem;
+  font-size: 2rem;
   margin-bottom: 20px;
 }
 

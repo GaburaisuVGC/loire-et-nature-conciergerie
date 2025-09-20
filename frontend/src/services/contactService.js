@@ -13,6 +13,7 @@ class ContactService {
       formData.append('email', contactData.email);
       formData.append('phone', contactData.phone || '');
       formData.append('subject', contactData.subject || 'Contact général');
+      formData.append('title', contactData.title || '');
       formData.append('message', contactData.message);
       formData.append('propertyInterest', contactData.propertyInterest || '');
       formData.append('source', contactData.source || 'website');
@@ -60,12 +61,18 @@ class ContactService {
     return phoneRegex.test(phone);
   }
 
+  // Validation spécifique pour le formulaire Contact (avec titre obligatoire)
   validateContactForm(formData) {
     const errors = {};
 
     // Validation du nom
-    if (!formData.name || formData.name.trim().length < 2) {
-      errors.name = 'Le nom doit contenir au moins 2 caractères';
+    if (!formData.nom || formData.nom.trim().length < 2) {
+      errors.nom = 'Le nom doit contenir au moins 2 caractères';
+    }
+
+    // Validation du prénom
+    if (!formData.prenom || formData.prenom.trim().length < 2) {
+      errors.prenom = 'Le prénom doit contenir au moins 2 caractères';
     }
 
     // Validation de l'email
@@ -76,8 +83,13 @@ class ContactService {
     }
 
     // Validation du téléphone (optionnel mais format si présent)
-    if (formData.phone && !this.validatePhone(formData.phone)) {
-      errors.phone = 'Format de téléphone invalide (ex: 06 12 34 56 78)';
+    if (formData.telephone && !this.validatePhone(formData.telephone)) {
+      errors.telephone = 'Format de téléphone invalide (ex: 06 12 34 56 78)';
+    }
+
+    // Validation du titre (obligatoire uniquement pour le formulaire Contact)
+    if (!formData.titre || formData.titre.trim().length < 3) {
+      errors.titre = 'Le titre doit contenir au moins 3 caractères';
     }
 
     // Validation du message
@@ -91,7 +103,21 @@ class ContactService {
     };
   }
 
-  // Méthode spécifique pour les formulaires Propriétaires
+  // Conversion des données du formulaire Contact vers le format du service
+  convertContactData(formData) {
+    return {
+      name: `${formData.prenom} ${formData.nom}`,
+      email: formData.email,
+      phone: formData.telephone,
+      subject: formData.sujet || 'Contact général',
+      title: formData.titre,
+      message: formData.message,
+      propertyInterest: '',
+      source: 'contact_form'
+    };
+  }
+
+  // Méthode spécifique pour les formulaires Propriétaires (titre optionnel)
   validateProprietairesForm(formData) {
     const errors = {};
 
@@ -129,7 +155,7 @@ class ContactService {
     };
   }
 
-  // Méthode spécifique pour les formulaires Partenaires
+  // Méthode spécifique pour les formulaires Partenaires (titre optionnel)
   validatePartenairesForm(formData) {
     const errors = {};
 
@@ -190,6 +216,7 @@ class ContactService {
       email: formData.email,
       phone: formData.telephone,
       subject: 'Demande propriétaire - Gestion locative',
+      title: '', // titre optionnel pour les propriétaires
       message: `Adresse du logement: ${formData.adresse}\n\nMessage:\n${formData.message}`,
       propertyInterest: formData.adresse,
       source: 'proprietaires_form'
@@ -203,6 +230,7 @@ class ContactService {
       email: formData.email,
       phone: formData.telephone,
       subject: 'Demande de partenariat',
+      title: '', // titre optionnel pour les partenaires
       message: `Entreprise: ${formData.entreprise}\nPoste: ${formData.poste}\nVille: ${formData.ville}\n${formData.siteInternet ? `Site web: ${formData.siteInternet}\n` : ''}\nMessage:\n${formData.message}`,
       propertyInterest: '',
       source: 'partenaires_form'

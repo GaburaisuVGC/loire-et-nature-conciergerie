@@ -31,6 +31,52 @@ export default function AvailabilityCalendar({ propertyId, availability, loading
     }
   };
 
+    // Fonction pour trouver la première date indisponible après une date donnée
+  const findNextUnavailableDate = (fromDate) => {
+    if (!availability) return null;
+    
+    // Commence le lendemain de la date de départ
+    const checkDate = new Date(fromDate);
+    checkDate.setDate(checkDate.getDate() + 1);
+    
+    // Cherche jusqu'à 1 an dans le futur maximum
+    const maxDate = new Date(fromDate);
+    maxDate.setFullYear(maxDate.getFullYear() + 1);
+    
+    while (checkDate <= maxDate) {
+      const dateKey = format(checkDate, 'yyyy-MM-dd');
+      const dayAvailability = availability[dateKey];
+      
+      // Si la date n'existe pas dans availability ou n'est pas disponible
+      if (!dayAvailability || !dayAvailability.available) {
+        return new Date(checkDate);
+      }
+      
+      checkDate.setDate(checkDate.getDate() + 1);
+    }
+    
+    return null; // Aucune date indisponible trouvée
+  };
+
+  // Fonction pour calculer la date de départ maximale autorisée
+  const getMaxCheckOutDate = (checkInDate) => {
+    if (!checkInDate) return null;
+    
+    const nextUnavailableDate = findNextUnavailableDate(checkInDate);
+    
+    if (nextUnavailableDate) {
+      // La date de départ max est la veille de la première date indisponible
+      const maxCheckOut = new Date(nextUnavailableDate);
+      maxCheckOut.setDate(maxCheckOut.getDate() - 1);
+      return maxCheckOut;
+    }
+    
+    // Si aucune date indisponible n'est trouvée, limite à 1 an
+    const maxDate = new Date(checkInDate);
+    maxDate.setFullYear(maxDate.getFullYear() + 1);
+    return maxDate;
+  };
+
   const handleDateClick = (date) => {
     const dateKey = format(date, 'yyyy-MM-dd');
     const dayAvailability = availability?.[dateKey];
@@ -38,16 +84,25 @@ export default function AvailabilityCalendar({ propertyId, availability, loading
     if (!dayAvailability?.available) return;
 
     if (!selectedDates.checkIn || (selectedDates.checkIn && selectedDates.checkOut)) {
-
+      // Première sélection : date d'arrivée
       setSelectedDates({ checkIn: date, checkOut: null });
     } else if (date > selectedDates.checkIn) {
-
-      setSelectedDates(prev => ({ ...prev, checkOut: date }));
-      if (onDateSelect) {
-        onDateSelect({ checkIn: selectedDates.checkIn, checkOut: date });
+      // Vérification que la date de départ respecte la limite
+      const maxCheckOutDate = getMaxCheckOutDate(selectedDates.checkIn);
+      
+      if (maxCheckOutDate && date <= maxCheckOutDate) {
+        // La date de départ est valide
+        setSelectedDates(prev => ({ ...prev, checkOut: date }));
+        if (onDateSelect) {
+          onDateSelect({ checkIn: selectedDates.checkIn, checkOut: date });
+        }
+      } else {
+        // La date de départ dépasse la limite, ne fait rien ou affiche un message
+        console.warn(`Date de départ trop tardive. Maximum autorisé : ${maxCheckOutDate ? format(maxCheckOutDate, 'dd/MM/yyyy') : 'Non défini'}`);
+        return;
       }
     } else {
-
+      // Date antérieure à l'arrivée : nouvelle sélection d'arrivée
       setSelectedDates({ checkIn: date, checkOut: null });
     }
   };
@@ -60,10 +115,25 @@ export default function AvailabilityCalendar({ propertyId, availability, loading
     if (!dayAvailability.available) return 'unavailable';
     
     const { checkIn, checkOut } = selectedDates;
+    
+    // Si une date d'arrivée est sélectionnée, vérifier les limitations pour les dates de départ
+    if (checkIn && !checkOut && date > checkIn) {
+      const maxCheckOutDate = getMaxCheckOutDate(checkIn);
+      if (maxCheckOutDate && date > maxCheckOutDate) {
+        return 'blocked'; // Nouvelle classe pour les dates bloquées
+      }
+    }
+    
     if (checkIn && format(checkIn, 'yyyy-MM-dd') === dateKey) return 'check-in';
     if (checkOut && format(checkOut, 'yyyy-MM-dd') === dateKey) return 'check-out';
     if (checkIn && checkOut && date > checkIn && date < checkOut) return 'in-range';
-    if (checkIn && !checkOut && hoveredDate && date > checkIn && date <= hoveredDate) return 'preview-range';
+    if (checkIn && !checkOut && hoveredDate && date > checkIn && date <= hoveredDate) {
+      // Vérifier aussi pour la prévisualisation
+      const maxCheckOutDate = getMaxCheckOutDate(checkIn);
+      if (maxCheckOutDate && hoveredDate <= maxCheckOutDate) {
+        return 'preview-range';
+      }
+    }
     
     return 'available';
   };
@@ -81,6 +151,9 @@ export default function AvailabilityCalendar({ propertyId, availability, loading
     switch (status) {
       case 'unavailable':
         className += ' unavailable';
+        break;
+      case 'blocked':
+        className += ' blocked';
         break;
       case 'available':
         className += ' available';
@@ -109,12 +182,11 @@ export default function AvailabilityCalendar({ propertyId, availability, loading
     return availability?.[dateKey]?.price;
   };
 
-
+  // Calcul des jours du calendrier avec le décalage pour commencer par lundi
   const startDate = new Date(monthStart);
   const dayOfWeek = startDate.getDay();
   const mondayOffset = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
   startDate.setDate(startDate.getDate() - mondayOffset);
-
 
   const calendarDays = [];
   for (let i = 0; i < 42; i++) { 

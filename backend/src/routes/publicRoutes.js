@@ -450,8 +450,9 @@ export const sendContactMessage = async (req, res) => {
       email, 
       phone, 
       subject, 
+      title,
       message, 
-      propertyInterest,
+      propertyInterest, 
       source 
     } = req.body;
 
@@ -501,6 +502,7 @@ export const sendContactMessage = async (req, res) => {
       email: email.trim().toLowerCase(),
       phone: phone?.trim() || '',
       subject: subject || 'Contact depuis le site web',
+      title: title?.trim() || '',
       message: message.trim(),
       propertyInterest: propertyInterest?.trim() || '',
       timestamp: new Date().toISOString(),
@@ -517,6 +519,7 @@ export const sendContactMessage = async (req, res) => {
     console.log(`👤 De: ${contactData.name} (${contactData.email})`);
     console.log(`📞 Téléphone: ${contactData.phone || 'Non renseigné'}`);
     console.log(`📋 Sujet: ${contactData.subject}`);
+    console.log(`🏷️ Titre: ${contactData.title || 'Non renseigné'}`);
     console.log(`🏠 Propriété d'intérêt: ${contactData.propertyInterest || 'Aucune'}`);
     console.log(`📅 Reçu le: ${new Date(contactData.timestamp).toLocaleString('fr-FR')}`);
     if (contactData.attachments.length > 0) {

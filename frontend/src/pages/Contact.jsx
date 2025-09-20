@@ -4,12 +4,13 @@ import contactService from '../services/contactService';
 
 export default function Contact() {
   const [formData, setFormData] = useState({
-    name: '',
+    nom: '',
+    prenom: '',
     email: '',
-    phone: '',
-    subject: '',
-    message: '',
-    propertyInterest: ''
+    telephone: '',
+    sujet: '',
+    titre: '',
+    message: ''
   });
   
   const [showAlert, setShowAlert] = useState(false);
@@ -51,8 +52,11 @@ export default function Contact() {
         return;
       }
 
+      // Conversion des données vers le format du service
+      const contactData = contactService.convertContactData(formData);
+
       // Envoi du message
-      const result = await contactService.sendContactMessage(formData);
+      const result = await contactService.sendContactMessage(contactData);
       
       // Succès
       setAlertData({
@@ -63,12 +67,13 @@ export default function Contact() {
       
       // Reset du formulaire
       setFormData({
-        name: '',
+        nom: '',
+        prenom: '',
         email: '',
-        phone: '',
-        subject: '',
-        message: '',
-        propertyInterest: ''
+        telephone: '',
+        sujet: '',
+        titre: '',
+        message: ''
       });
       setFormErrors({});
       
@@ -121,43 +126,61 @@ export default function Contact() {
               {alertData.type === 'success' ? '✅ Message envoyé !' : '❌ Erreur'}
             </h5>
             <p className="mb-0">{alertData.message}</p>
-            {alertData.type === 'success' && (
-              <p className="mb-0 mt-2">
-                <small>Merci pour votre confiance ! Nous vous recontacterons dans les plus brefs délais.</small>
-              </p>
-            )}
           </Alert>
         )}
 
-        <Row>
-          {/* Contact Form */}
+        <Row className="justify-content-center">
+          {/* Contact Form - Centré */}
           <Col lg={8}>
             <Card className="shadow border-0">
               <Card.Body className="p-5">
-                <h3 className="font-garamond text-vert mb-4" style={{ fontWeight: 'bold', fontStyle: 'italic' }}>
+                <h3 className="font-garamond text-vert mb-4 text-center" style={{ fontWeight: 'bold', fontStyle: 'italic' }}>
                   Contactez Loire & Nature Conciergerie
                 </h3>
                 
                 <Form onSubmit={handleSubmit}>
+                  {/* Ligne 1: Nom, Prénom */}
                   <Row>
                     <Col md={6}>
                       <Form.Group className="mb-3">
-                        <Form.Label>Nom complet *</Form.Label>
+                        <Form.Label>Nom *</Form.Label>
                         <Form.Control
                           type="text"
-                          name="name"
-                          value={formData.name}
+                          name="nom"
+                          value={formData.nom}
                           onChange={handleChange}
                           required
                           disabled={loading}
-                          placeholder="Votre nom et prénom"
-                          isInvalid={!!formErrors.name}
+                          placeholder="Votre nom"
+                          isInvalid={!!formErrors.nom}
                         />
                         <Form.Control.Feedback type="invalid">
-                          {formErrors.name}
+                          {formErrors.nom}
                         </Form.Control.Feedback>
                       </Form.Group>
                     </Col>
+                    <Col md={6}>
+                      <Form.Group className="mb-3">
+                        <Form.Label>Prénom *</Form.Label>
+                        <Form.Control
+                          type="text"
+                          name="prenom"
+                          value={formData.prenom}
+                          onChange={handleChange}
+                          required
+                          disabled={loading}
+                          placeholder="Votre prénom"
+                          isInvalid={!!formErrors.prenom}
+                        />
+                        <Form.Control.Feedback type="invalid">
+                          {formErrors.prenom}
+                        </Form.Control.Feedback>
+                      </Form.Group>
+                    </Col>
+                  </Row>
+
+                  {/* Ligne 2: Email, Téléphone */}
+                  <Row>
                     <Col md={6}>
                       <Form.Group className="mb-3">
                         <Form.Label>Email *</Form.Label>
@@ -176,32 +199,33 @@ export default function Contact() {
                         </Form.Control.Feedback>
                       </Form.Group>
                     </Col>
-                  </Row>
-
-                  <Row>
                     <Col md={6}>
                       <Form.Group className="mb-3">
                         <Form.Label>Téléphone</Form.Label>
                         <Form.Control
                           type="tel"
-                          name="phone"
-                          value={formData.phone}
+                          name="telephone"
+                          value={formData.telephone}
                           onChange={handleChange}
                           disabled={loading}
                           placeholder="06 12 34 56 78"
-                          isInvalid={!!formErrors.phone}
+                          isInvalid={!!formErrors.telephone}
                         />
                         <Form.Control.Feedback type="invalid">
-                          {formErrors.phone}
+                          {formErrors.telephone}
                         </Form.Control.Feedback>
                       </Form.Group>
                     </Col>
-                    <Col md={6}>
+                  </Row>
+
+                  {/* Ligne 3: Sujet */}
+                  <Row>
+                    <Col md={12}>
                       <Form.Group className="mb-3">
                         <Form.Label>Sujet</Form.Label>
                         <Form.Select
-                          name="subject"
-                          value={formData.subject}
+                          name="sujet"
+                          value={formData.sujet}
                           onChange={handleChange}
                           disabled={loading}
                         >
@@ -217,51 +241,59 @@ export default function Contact() {
                     </Col>
                   </Row>
 
-                  <Form.Group className="mb-3">
-                    <Form.Label>Propriété d'intérêt (optionnel)</Form.Label>
-                    <Form.Control
-                      type="text"
-                      name="propertyInterest"
-                      value={formData.propertyInterest}
-                      onChange={handleChange}
-                      disabled={loading}
-                      placeholder="Nom de la propriété qui vous intéresse"
-                    />
-                    <Form.Text className="text-muted">
-                      Si votre demande concerne une propriété spécifique
-                    </Form.Text>
-                  </Form.Group>
+                  {/* Ligne 4: Titre */}
+                  <Row>
+                    <Col md={12}>
+                      <Form.Group className="mb-3">
+                        <Form.Label>Titre *</Form.Label>
+                        <Form.Control
+                          type="text"
+                          name="titre"
+                          value={formData.titre}
+                          onChange={handleChange}
+                          required
+                          disabled={loading}
+                          placeholder="Objet de votre demande"
+                          isInvalid={!!formErrors.titre}
+                        />
+                        <Form.Control.Feedback type="invalid">
+                          {formErrors.titre}
+                        </Form.Control.Feedback>
+                      </Form.Group>
+                    </Col>
+                  </Row>
 
-                  <Form.Group className="mb-4">
-                    <Form.Label>Message *</Form.Label>
-                    <Form.Control
-                      as="textarea"
-                      rows={5}
-                      name="message"
-                      value={formData.message}
-                      onChange={handleChange}
-                      required
-                      disabled={loading}
-                      placeholder="Décrivez votre demande en détail..."
-                      isInvalid={!!formErrors.message}
-                    />
-                    <Form.Control.Feedback type="invalid">
-                      {formErrors.message}
-                    </Form.Control.Feedback>
-                  </Form.Group>
+                  {/* Ligne 5: Message */}
+                  <Row>
+                    <Col md={12}>
+                      <Form.Group className="mb-4">
+                        <Form.Label>Message *</Form.Label>
+                        <Form.Control
+                          as="textarea"
+                          rows={5}
+                          name="message"
+                          value={formData.message}
+                          onChange={handleChange}
+                          required
+                          disabled={loading}
+                          placeholder="Décrivez votre demande en détail..."
+                          isInvalid={!!formErrors.message}
+                        />
+                        <Form.Control.Feedback type="invalid">
+                          {formErrors.message}
+                        </Form.Control.Feedback>
+                      </Form.Group>
+                    </Col>
+                  </Row>
 
-                  <div className="text-end">
+                  <div className="text-center">
                     <Button 
                       type="submit" 
                       disabled={loading}
-                      className="px-5 py-2"
-                      style={{ 
-                        backgroundColor: 'var(--vert-loire)',
-                        color: 'white',
-                        border: 'none',
-                        borderRadius: '25px',
-                        fontFamily: 'Montserrat',
-                        fontWeight: '500'
+                      className="btn-custom-vert px-5 py-2"
+                      style={{
+                        fontSize: '1.1rem',
+                        fontWeight: '600'
                       }}
                     >
                       {loading ? (
@@ -274,7 +306,7 @@ export default function Contact() {
                             aria-hidden="true"
                             className="me-2"
                           />
-                          Envoi...
+                          Envoi en cours...
                         </>
                       ) : (
                         'Envoyer le message'

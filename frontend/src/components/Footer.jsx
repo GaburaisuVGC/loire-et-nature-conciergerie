@@ -32,7 +32,8 @@ export function Footer() {
 
           <div className="footer-links">
             <Link to="/mentions-legales">Mentions légales</Link>
-            <Link to="/politique-confidentialite">Politique de confidentialité</Link>
+            <Link to="/cgv">CGV</Link>
+            <Link to="/cgu">CGU</Link>
             <Link to="/login">Administration</Link>
           </div>
 

@@ -7,6 +7,9 @@ import Reservations from "./pages/Reservations";
 import Proprietaires from "./pages/Proprietaires";
 import Partenaires from "./pages/Partenaires";
 import Contact from "./pages/Contact";
+import MentionsLegales from "./pages/MentionsLegales";
+import CGV from "./pages/CGV";
+import CGU from "./pages/CGU";
 import Login from "./pages/Login";
 import Admin from "./pages/Admin";
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -23,6 +26,9 @@ function App() {
           <Route path="/proprietaires" element={<Proprietaires />} />
           <Route path="/partenaires" element={<Partenaires />} />
           <Route path="/contact" element={<Contact />} />
+          <Route path="/mentions-legales" element={<MentionsLegales />} />
+          <Route path="/cgv" element={<CGV />} />
+          <Route path="/cgu" element={<CGU />} />
           <Route path="/login" element={<Login />} />
           <Route 
             path="/admin" 
