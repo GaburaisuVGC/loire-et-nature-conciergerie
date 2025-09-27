@@ -4,6 +4,7 @@ import { AppLayout } from "./components/Layout";
 import Home from "./pages/Home";
 import NotreDemarche from "./pages/NotreDemarche";
 import Reservations from "./pages/Reservations";
+import Voyageurs from "./pages/Voyageurs";
 import Proprietaires from "./pages/Proprietaires";
 import Partenaires from "./pages/Partenaires";
 import Contact from "./pages/Contact";
@@ -23,6 +24,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/notre-demarche" element={<NotreDemarche />} />
           <Route path="/reservations" element={<Reservations />} />
+          <Route path="/voyageurs" element={<Voyageurs />} />
           <Route path="/proprietaires" element={<Proprietaires />} />
           <Route path="/partenaires" element={<Partenaires />} />
           <Route path="/contact" element={<Contact />} />

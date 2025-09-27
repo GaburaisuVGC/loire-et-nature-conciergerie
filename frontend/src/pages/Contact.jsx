@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import { Container, Row, Col, Card, Form, Button, Alert, Spinner } from 'react-bootstrap';
-import contactService from '../services/contactService';
+import React, { useState } from "react";
+import { Container, Row, Col, Card, Form, Button, Alert, Spinner } from "react-bootstrap";
+import contactService from "../services/contactService";
 
 export default function Contact() {
   const [formData, setFormData] = useState({
@@ -12,11 +12,45 @@ export default function Contact() {
     titre: '',
     message: ''
   });
-  
-  const [showAlert, setShowAlert] = useState(false);
-  const [alertData, setAlertData] = useState({ type: 'success', message: '' });
-  const [loading, setLoading] = useState(false);
+
   const [formErrors, setFormErrors] = useState({});
+  const [loading, setLoading] = useState(false);
+  const [showAlert, setShowAlert] = useState(false);
+  const [alertData, setAlertData] = useState({ type: '', message: '' });
+
+  const validateForm = () => {
+    const errors = {};
+
+    if (!formData.nom.trim()) {
+      errors.nom = 'Le nom est requis';
+    } else if (formData.nom.trim().length < 2) {
+      errors.nom = 'Le nom doit contenir au moins 2 caractères';
+    }
+
+    if (!formData.prenom.trim()) {
+      errors.prenom = 'Le prénom est requis';
+    } else if (formData.prenom.trim().length < 2) {
+      errors.prenom = 'Le prénom doit contenir au moins 2 caractères';
+    }
+
+    if (!formData.email.trim()) {
+      errors.email = 'L\'email est requis';
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      errors.email = 'Format d\'email invalide';
+    }
+
+    if (formData.telephone.trim() && !/^(?:(?:\+|00)33|0)\s*[1-9](?:[\s.-]*\d{2}){4}$/.test(formData.telephone.replace(/\s/g, ''))) {
+      errors.telephone = 'Format de téléphone invalide';
+    }
+
+    if (!formData.message.trim()) {
+      errors.message = 'Le message est requis';
+    } else if (formData.message.trim().length < 10) {
+      errors.message = 'Le message doit contenir au moins 10 caractères';
+    }
+
+    return errors;
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -24,7 +58,7 @@ export default function Contact() {
       ...prev,
       [name]: value
     }));
-    
+
     if (formErrors[name]) {
       setFormErrors(prev => ({
         ...prev,
@@ -35,37 +69,34 @@ export default function Contact() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
-    setShowAlert(false);
     
+    const errors = validateForm();
+    if (Object.keys(errors).length > 0) {
+      setFormErrors(errors);
+      return;
+    }
+
+    setLoading(true);
+    setFormErrors({});
+
     try {
-      // Validation du formulaire
-      const validation = contactService.validateContactForm(formData);
-      
-      if (!validation.isValid) {
-        setFormErrors(validation.errors);
-        setAlertData({
-          type: 'danger',
-          message: 'Veuillez corriger les erreurs dans le formulaire.'
-        });
-        setShowAlert(true);
-        return;
-      }
+      const contactData = {
+        name: `${formData.prenom} ${formData.nom}`,
+        email: formData.email,
+        phone: formData.telephone,
+        subject: formData.sujet || 'Contact depuis le site web',
+        title: formData.titre,
+        message: formData.message,
+        source: 'contact-page'
+      };
 
-      // Conversion des données vers le format du service
-      const contactData = contactService.convertContactData(formData);
-
-      // Envoi du message
-      const result = await contactService.sendContactMessage(contactData);
+      await contactService.sendContactMessage(contactData);
       
-      // Succès
       setAlertData({
         type: 'success',
-        message: result.message || 'Votre message a été envoyé avec succès !'
+        message: 'Votre message a été envoyé avec succès. Nous vous recontacterons dans les plus brefs délais.'
       });
-      setShowAlert(true);
       
-      // Reset du formulaire
       setFormData({
         nom: '',
         prenom: '',
@@ -75,16 +106,13 @@ export default function Contact() {
         titre: '',
         message: ''
       });
-      setFormErrors({});
       
-      // Scroll vers le haut
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-      
+      setShowAlert(true);
     } catch (error) {
       console.error('Erreur lors de l\'envoi:', error);
       setAlertData({
         type: 'danger',
-        message: error.message || 'Une erreur est survenue lors de l\'envoi. Veuillez réessayer.'
+        message: error.message || 'Une erreur est survenue lors de l\'envoi de votre message. Veuillez réessayer.'
       });
       setShowAlert(true);
     } finally {
@@ -98,12 +126,14 @@ export default function Contact() {
       <section 
         className="hero-section"
         style={{
-          backgroundColor: 'var(--rose-pale)',
+          backgroundImage: `url('/hero-image-contact.jpg')`,
+          backgroundColor: '#D8CBB5',
           minHeight: '40vh',
           display: 'flex',
           alignItems: 'center'
         }}
       >
+       <div className="hero-overlay"></div>
         <Container>
           <div className="hero-content text-center">
             <h1 className="font-garamond text-vert hero-title" style={{ fontStyle: 'italic', fontWeight: 'bold' }}>
@@ -129,8 +159,69 @@ export default function Contact() {
           </Alert>
         )}
 
-        <Row className="justify-content-center">
-          {/* Contact Form - Centré */}
+        <Row>
+          {/* Colonne de gauche - Cards d'information */}
+          <Col lg={4} className="mb-4">
+            {/* Card Contact */}
+            <Card className="shadow border-0 mb-4">
+              <Card.Body className="p-4 text-center">
+                <div className="mb-3">
+                  <i className="bi bi-chat-dots-fill text-vert" style={{ fontSize: '2rem' }}></i>
+                </div>
+                <h4 className="font-garamond text-vert mb-3" style={{ fontStyle: 'italic', fontWeight: 'bold' }}>
+                  Contact
+                </h4>
+                <div className="mb-3">
+                  <div className="d-flex align-items-center justify-content-center mb-2">
+                    <i className="bi bi-house-fill text-vert me-2"></i>
+                    <span>Loire & Nature Conciergerie</span>
+                  </div>
+                  <div className="d-flex align-items-center justify-content-center mb-2">
+                    <i className="bi bi-telephone-fill text-vert me-2"></i>
+                    <a href="tel:0743535331" className="text-decoration-none text-dark">07 43 53 53 31</a>
+                  </div>
+                  <div className="d-flex align-items-center justify-content-center mb-3">
+                    <i className="bi bi-envelope-fill text-vert me-2"></i>
+                    <a href="mailto:loire.et.nature.conciergerie@gmail.com" className="text-decoration-none text-dark">
+                      loire.et.nature.conciergerie@gmail.com
+                    </a>
+                  </div>
+                </div>
+                <div className="d-flex justify-content-center gap-3">
+                  <a href="https://www.facebook.com" target="_blank" rel="noopener noreferrer" className="text-vert">
+                    <i className="bi bi-facebook" style={{ fontSize: '1.2rem' }}></i>
+                  </a>
+                  <a href="https://www.google.com" target="_blank" rel="noopener noreferrer" className="text-vert">
+                    <i className="bi bi-google" style={{ fontSize: '1.2rem' }}></i>
+                  </a>
+                  <a href="https://www.linkedin.com" target="_blank" rel="noopener noreferrer" className="text-vert">
+                    <i className="bi bi-linkedin" style={{ fontSize: '1.2rem' }}></i>
+                  </a>
+                  <a href="https://www.instagram.com" target="_blank" rel="noopener noreferrer" className="text-vert">
+                    <i className="bi bi-instagram" style={{ fontSize: '1.2rem' }}></i>
+                  </a>
+                </div>
+              </Card.Body>
+            </Card>
+
+            {/* Card Loire & Nature Conciergerie */}
+            <Card className="shadow border-0">
+              <Card.Body className="p-4 text-center">
+                <div className="mb-3">
+                  <i className="bi bi-house-fill text-vert" style={{ fontSize: '2rem' }}></i>
+                </div>
+                <h4 className="font-garamond text-vert mb-3" style={{ fontStyle: 'italic', fontWeight: 'bold' }}>
+                  Loire & Nature Conciergerie
+                </h4>
+                <p style={{ lineHeight: '1.6' }}>
+                  Une conciergerie née du désir de faire découvrir, accueillir et valoriser, 
+                  dans le respect des valeurs simples et essentielles, notre région.
+                </p>
+              </Card.Body>
+            </Card>
+          </Col>
+
+          {/* Colonne de droite - Formulaire de contact */}
           <Col lg={8}>
             <Card className="shadow border-0">
               <Card.Body className="p-5">
@@ -223,20 +314,14 @@ export default function Contact() {
                     <Col md={12}>
                       <Form.Group className="mb-3">
                         <Form.Label>Sujet</Form.Label>
-                        <Form.Select
+                        <Form.Control
+                          type="text"
                           name="sujet"
                           value={formData.sujet}
                           onChange={handleChange}
                           disabled={loading}
-                        >
-                          <option value="">Choisissez un sujet</option>
-                          <option value="gestion-locative">Gestion locative</option>
-                          <option value="conciergerie">Services de conciergerie</option>
-                          <option value="reservation">Demande de réservation</option>
-                          <option value="maintenance">Maintenance et entretien</option>
-                          <option value="partenariat">Partenariat</option>
-                          <option value="autre">Autre demande</option>
-                        </Form.Select>
+                          placeholder="Sujet de votre message"
+                        />
                       </Form.Group>
                     </Col>
                   </Row>
@@ -245,15 +330,14 @@ export default function Contact() {
                   <Row>
                     <Col md={12}>
                       <Form.Group className="mb-3">
-                        <Form.Label>Titre *</Form.Label>
+                        <Form.Label>Titre</Form.Label>
                         <Form.Control
                           type="text"
                           name="titre"
                           value={formData.titre}
                           onChange={handleChange}
-                          required
                           disabled={loading}
-                          placeholder="Objet de votre demande"
+                          placeholder="Titre de votre demande"
                           isInvalid={!!formErrors.titre}
                         />
                         <Form.Control.Feedback type="invalid">

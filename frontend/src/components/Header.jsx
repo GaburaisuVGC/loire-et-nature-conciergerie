@@ -7,7 +7,7 @@ export function Header() {
   const [showDropdown, setShowDropdown] = useState(false);
 
   const isReservationActive = () => {
-    return ['/reservations', '/proprietaires', '/partenaires'].includes(location.pathname);
+    return ['/reservations', '/voyageurs', '/proprietaires', '/partenaires'].includes(location.pathname);
   };
 
   return (
@@ -141,6 +141,13 @@ export function Header() {
                     className={location.pathname === "/reservations" ? "active" : ""}
                   >
                     Réservations
+                  </Dropdown.Item>
+                  <Dropdown.Item 
+                    as={Link} 
+                    to="/voyageurs"
+                    className={location.pathname === "/voyageurs" ? "active" : ""}
+                  >
+                    Voyageurs
                   </Dropdown.Item>
                   <Dropdown.Item 
                     as={Link} 
