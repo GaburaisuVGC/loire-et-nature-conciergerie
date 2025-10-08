@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import { Property } from '../models/Property.js';
+import { Testimonial } from '../models/Testimonial.js';
 import { Beds24Service } from '../services/beds24Service.js';
 import emailService from '../services/emailService.js';
 import { uploadMultiple, cleanupFiles } from '../middlewares/uploadMiddleware.js';
@@ -567,6 +568,145 @@ export const sendContactMessage = async (req, res) => {
   }
 };
 
+/**
+ * @swagger
+ * /public/testimonials:
+ *   get:
+ *     summary: Get all approved testimonials
+ *     tags: [Public]
+ *     responses:
+ *       200:
+ *         description: List of approved testimonials
+ */
+export const getPublicTestimonials = async (req, res, next) => {
+  try {
+    const testimonials = await Testimonial.findApproved();
+    res.json({
+      success: true,
+      count: testimonials.length,
+      testimonials: testimonials.map(t => t.toJSON())
+    });
+  } catch (error) {
+    console.error('Error fetching public testimonials:', error);
+    next(error);
+  }
+};
+
+/**
+ * @swagger
+ * /public/testimonials/top:
+ *   get:
+ *     summary: Get top rated testimonials
+ *     tags: [Public]
+ *     parameters:
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *           default: 3
+ *     responses:
+ *       200:
+ *         description: List of top rated testimonials
+ */
+export const getTopTestimonials = async (req, res, next) => {
+  try {
+    const limit = parseInt(req.query.limit) || 3;
+    const testimonials = await Testimonial.findTopRated(limit);
+    res.json({
+      success: true,
+      count: testimonials.length,
+      testimonials: testimonials.map(t => t.toJSON())
+    });
+  } catch (error) {
+    console.error('Error fetching top testimonials:', error);
+    next(error);
+  }
+};
+
+/**
+ * @swagger
+ * /public/testimonials:
+ *   post:
+ *     summary: Submit a new testimonial
+ *     tags: [Public]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               email:
+ *                 type: string
+ *               name:
+ *                 type: string
+ *               rating:
+ *                 type: integer
+ *                 minimum: 1
+ *                 maximum: 5
+ *               comment:
+ *                 type: string
+ *             required:
+ *               - email
+ *               - name
+ *               - rating
+ *               - comment
+ *     responses:
+ *       201:
+ *         description: Testimonial submitted successfully
+ */
+export const createPublicTestimonial = async (req, res, next) => {
+  try {
+    const { email, name, rating, comment } = req.body;
+
+    if (!email || !name || !rating || !comment) {
+      return res.status(400).json({
+        success: false,
+        error: 'Tous les champs sont obligatoires'
+      });
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return res.status(400).json({
+        success: false,
+        error: 'Format d\'email invalide'
+      });
+    }
+
+    if (rating < 1 || rating > 5) {
+      return res.status(400).json({
+        success: false,
+        error: 'La note doit être entre 1 et 5'
+      });
+    }
+
+    if (comment.length < 10) {
+      return res.status(400).json({
+        success: false,
+        error: 'L\'avis doit contenir au moins 10 caractères'
+      });
+    }
+
+    const testimonial = await Testimonial.create({
+      email,
+      name,
+      rating: parseInt(rating),
+      comment
+    });
+
+    res.status(201).json({
+      success: true,
+      message: 'Votre témoignage a été envoyé avec succès. Il sera publié après modération.',
+      testimonial: testimonial.toJSON()
+    });
+  } catch (error) {
+    console.error('Error creating testimonial:', error);
+    next(error);
+  }
+};
+
+
 export const testEmail = async (req, res) => {
   try {
     const { toEmail } = req.body;
@@ -610,6 +750,9 @@ export const emailStatus = async (req, res) => {
 router.get('/properties', getPublicProperties);
 router.get('/properties/:id', getPublicProperty);
 router.get('/properties/:id/availability', getPropertyAvailability);
+router.get('/testimonials', getPublicTestimonials);
+router.get('/testimonials/top', getTopTestimonials);
+router.post('/testimonials', createPublicTestimonial);
 router.post('/contact', uploadMultiple, handleUploadError, sendContactMessage);
 router.post('/test-email', testEmail);
 router.get('/email-status', emailStatus);

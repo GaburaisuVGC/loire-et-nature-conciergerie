@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 import authRoutes from './routes/authRoutes.js';
 import propertyRoutes from './routes/propertyRoutes.js';
 import publicRoutes from './routes/publicRoutes.js';
+import testimonialRoutes from './routes/testimonialRoutes.js';
 import { errorHandler } from './middlewares/errorHandler.js';
 import { isAdmin } from './middlewares/authMiddleware.js';
 
@@ -22,6 +23,7 @@ app.use('/api/auth', authRoutes);
 
 // Protected routes (authentication required)
 app.use('/api/properties', isAdmin, propertyRoutes);
+app.use('/api/testimonials', isAdmin, testimonialRoutes);
 
 // Swagger setup
 import swaggerJSDoc from 'swagger-jsdoc';

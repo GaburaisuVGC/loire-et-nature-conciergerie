@@ -931,3 +931,216 @@ body {
   border-color: var(--vert-loire);
   color: var(--blanc);
 }
+
+/* Formulaire de témoignages */
+.testimonial-form {
+  background: var(--blanc);
+  border-radius: 15px;
+  padding: 30px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Système d'étoiles interactif */
+.rating-stars {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.rating-stars i {
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 2rem;
+}
+
+.rating-stars i:hover {
+  transform: scale(1.2);
+}
+
+/* Cards de témoignages dans la grille */
+.testimonial-card {
+  background-color: var(--blanc);
+  border-radius: 15px;
+  padding: 25px;
+  box-shadow: 0 3px 15px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.testimonial-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.testimonial-card .stars {
+  color: var(--beige-terre);
+  font-size: 1.2rem;
+  margin-bottom: 15px;
+  display: flex;
+  gap: 3px;
+}
+
+.testimonial-card .testimonial-text {
+  color: var(--gris-fonce);
+  font-style: italic;
+  margin-bottom: 15px;
+  line-height: 1.6;
+  flex-grow: 1;
+  overflow: hidden;
+}
+
+.testimonial-card .testimonial-author {
+  color: var(--vert-loire);
+  font-weight: 600;
+  text-align: right;
+  margin-top: auto;
+}
+
+/* Modal pour témoignage complet */
+.modal-backdrop.show {
+  backdrop-filter: blur(5px);
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-content {
+  border-radius: 15px;
+  border: none;
+}
+
+.modal-header {
+  background-color: var(--rose-pale);
+  border-top-left-radius: 15px;
+  border-top-right-radius: 15px;
+}
+
+/* Bouton "Lire la suite" */
+.btn-link.text-vert {
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.btn-link.text-vert:hover {
+  color: var(--bleu-loire) !important;
+  text-decoration: underline;
+}
+
+/* Section témoignages sur la home page */
+.testimonials-section {
+  background-color: var(--rose-pale);
+  padding: 60px 0;
+  margin-top: 60px;
+}
+
+.testimonials-section .section-title h2 {
+  color: var(--vert-loire);
+  font-family: 'EB Garamond', serif;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+/* Responsive pour la grille de témoignages */
+@media (max-width: 992px) {
+  .testimonial-card {
+    margin-bottom: 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  .rating-stars i {
+    font-size: 1.5rem;
+  }
+  
+  .testimonial-form {
+    padding: 20px;
+  }
+}
+
+/* Tabs dans la page Admin */
+.nav-tabs {
+  border-bottom: 2px solid var(--rose-pale);
+}
+
+.nav-tabs .nav-link {
+  color: var(--gris-fonce);
+  border: none;
+  border-bottom: 3px solid transparent;
+  transition: all 0.3s ease;
+}
+
+.nav-tabs .nav-link:hover {
+  color: var(--vert-loire);
+  border-bottom-color: var(--vert-loire);
+}
+
+.nav-tabs .nav-link.active {
+  color: var(--vert-loire);
+  font-weight: 600;
+  border-bottom-color: var(--vert-loire);
+  background-color: transparent;
+}
+
+/* Table responsive pour admin */
+@media (max-width: 768px) {
+  .table-responsive table {
+    font-size: 0.85rem;
+  }
+  
+  .table-responsive th,
+  .table-responsive td {
+    padding: 0.5rem;
+  }
+}
+
+/* Badges */
+.badge {
+  padding: 0.5em 0.75em;
+  font-weight: 500;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.testimonial-card {
+  animation: fadeIn 0.5s ease-out;
+}
+
+/* Bouton custom vert pour le formulaire */
+.btn-custom-vert {
+  background-color: var(--vert-loire);
+  color: var(--blanc);
+  border: 2px solid var(--vert-loire);
+  padding: 12px 30px;
+  border-radius: 8px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  display: inline-block;
+}
+
+.btn-custom-vert:hover {
+  background-color: transparent;
+  color: var(--vert-loire);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(12, 81, 58, 0.2);
+  border: 2px solid var(--vert-loire);
+}
+
+.btn-custom-vert:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}

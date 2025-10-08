@@ -65,7 +65,7 @@ export default function Voyageurs() {
 
           <Row className="g-4">
             {/* Formule tranquilité */}
-            <Col lg={4} md={6}>
+            <Col lg={6} md={6}>
               <Card className="h-100 shadow border-0 offre-card">
                 <Card.Body className="p-4">
                   <h4 className="font-garamond text-vert mb-4" style={{ fontWeight: 'bold', fontStyle: 'italic' }}>
@@ -74,42 +74,18 @@ export default function Voyageurs() {
                   <ul className="list-unstyled">
                     <li className="mb-3">
                       <i className="bi bi-check-circle-fill text-vert me-2"></i>
-                      Pack d'accueil Premium inclus (2 produits locaux au choix<sup>1</sup>)
+                      Pack d'accueil standard <sup>1</sup>
                     </li>
                     <li className="mb-3">
                       <i className="bi bi-check-circle-fill text-vert me-2"></i>
-                      Check-in personnalisé avec un accueil sur place à l'arrivée si besoin
-                      <br />
-                      <small className="text-muted">(À préciser à la commande<sup>3</sup>)</small>
+                      Check-in personnalisé avec un accueil sur place à l'arrivée <sup>2</sup>
+                    </li>
+                    <li className="mb-3">
+                      ou
                     </li>
                     <li className="mb-3">
                       <i className="bi bi-check-circle-fill text-vert me-2"></i>
-                      Pack d'accueil standard<sup>2</sup>
-                    </li>
-                    <li className="mb-3">
-                      <i className="bi bi-check-circle-fill text-vert me-2"></i>
-                      Horaires du lundi au vendredi 9h-18h
-                    </li>
-                    <li className="mb-0">
-                      <i className="bi bi-check-circle-fill text-vert me-2"></i>
-                      Assistance téléphonique jusqu'à 21h 7j/7
-                    </li>
-                  </ul>
-                </Card.Body>
-              </Card>
-            </Col>
-
-            {/* Formule dynamique */}
-            <Col lg={4} md={6}>
-              <Card className="h-100 shadow border-0 offre-card">
-                <Card.Body className="p-4">
-                  <h4 className="font-garamond text-vert mb-4" style={{ fontWeight: 'bold', fontStyle: 'italic' }}>
-                    Formule dynamique
-                  </h4>
-                  <ul className="list-unstyled">
-                    <li className="mb-3">
-                      <i className="bi bi-check-circle-fill text-vert me-2"></i>
-                      Inclus Pack d'accueil standard<sup>2</sup>
+                      Check-in autonome <sup>3</sup>
                     </li>
                     <li className="mb-3">
                       <i className="bi bi-check-circle-fill text-vert me-2"></i>
@@ -124,8 +100,8 @@ export default function Voyageurs() {
               </Card>
             </Col>
 
-            {/* Services à la carte */}
-            <Col lg={4} md={12}>
+            {/* Des services à la carte */}
+            <Col lg={6} md={6}>
               <Card className="h-100 shadow border-0 offre-card">
                 <Card.Body className="p-4">
                   <h4 className="font-garamond text-vert mb-4" style={{ fontWeight: 'bold', fontStyle: 'italic' }}>
@@ -133,15 +109,19 @@ export default function Voyageurs() {
                   </h4>
                   <ul className="list-unstyled">
                     <li className="mb-3">
-                      <i className="bi bi-basket-fill text-vert me-2"></i>
+                      <i className="bi bi-check-circle-fill text-vert me-2"></i>
+                      Pack d'accueil premium (deux produits locaux au choix selon disponiblité)
+                    </li>
+                    <li className="mb-3">
+                      <i className="bi bi-check-circle-fill text-vert me-2"></i>
                       Paniers petit déjeuner local
                     </li>
                     <li className="mb-3">
-                      <i className="bi bi-cup-straw text-vert me-2"></i>
-                      Paniers apéro
+                      <i className="bi bi-check-circle-fill text-vert me-2"></i>
+                      Paniers apéritifs du terroir
                     </li>
                     <li className="mb-0">
-                      <i className="bi bi-geo-alt-fill text-vert me-2"></i>
+                      <i className="bi bi-check-circle-fill text-vert me-2"></i>
                       Produits locaux
                     </li>
                   </ul>
@@ -159,13 +139,13 @@ export default function Voyageurs() {
             </h5>
             <div style={{ fontSize: '0.95rem', lineHeight: '1.6' }}>
               <p className="mb-2">
-                <sup>1</sup> (placeholder)
+                <sup>1</sup> (eau; café; thé; savon main; éponge; liquide vaisselle)
               </p>
               <p className="mb-2">
-                <sup>2</sup> (placeholder)
+                <sup>2</sup> Réservation obligatoire à la commande. Pour l'offre autonome, mise à disposition de boite à clés ou digicode.
               </p>
               <p className="mb-0">
-                <sup>3</sup> (placeholder)
+                <sup>3</sup> Mise à disposition de boite à clés ou digicode.
               </p>
             </div>
           </div>

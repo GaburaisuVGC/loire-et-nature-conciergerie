@@ -7,6 +7,7 @@ import Reservations from "./pages/Reservations";
 import Voyageurs from "./pages/Voyageurs";
 import Proprietaires from "./pages/Proprietaires";
 import Partenaires from "./pages/Partenaires";
+import Temoignages from "./pages/Temoignages";
 import Contact from "./pages/Contact";
 import MentionsLegales from "./pages/MentionsLegales";
 import CGV from "./pages/CGV";
@@ -26,6 +27,7 @@ function App() {
           <Route path="/reservations" element={<Reservations />} />
           <Route path="/voyageurs" element={<Voyageurs />} />
           <Route path="/proprietaires" element={<Proprietaires />} />
+          <Route path="/temoignages" element={<Temoignages />} />
           <Route path="/partenaires" element={<Partenaires />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/mentions-legales" element={<MentionsLegales />} />

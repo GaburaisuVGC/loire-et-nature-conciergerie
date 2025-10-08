@@ -167,6 +167,14 @@ export function Header() {
               </Dropdown>
 
               <Nav.Link 
+              as={Link} 
+              to="/temoignages" 
+              className={location.pathname === "/temoignages" ? "active" : ""}
+            >
+              Témoignages
+            </Nav.Link>
+
+              <Nav.Link 
                 as={Link} 
                 to="/contact" 
                 className={location.pathname === "/contact" ? "active" : ""}
