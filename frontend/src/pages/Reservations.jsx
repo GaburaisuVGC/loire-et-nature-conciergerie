@@ -4,8 +4,9 @@ import { Link } from 'react-router-dom';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import L from 'leaflet';
 import PropertyDetailModal from '../components/PropertyDetailModal';
-import { mockProperties } from '../data/mockData';
+import axios from 'axios';
 import 'leaflet/dist/leaflet.css';
+import propertyService from '../services/propertyService';
 
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
@@ -42,14 +43,54 @@ export default function Reservations() {
   const mapCenter = [47.2869, -2.3890]; 
   const mapZoom = 12;
 
+  // Fetch all registered property details once on mount
   useEffect(() => {
-    loadProperties();
+    const fetchProperties = async () => {
+      setLoading(true);
+      setError('');
+      try {
+        const res = await propertyService.getProperties();
+        // Flatten and clean up the details
+        console.log(res);
+        const realProperties = res
+          .map(item => {
+            // Compose a property object for display
+            return {
+              id: item.propId,
+              propKey: item?.propKey,
+              name: item.name,
+              address: item.address || '',
+              description: (item.texts?.propertyDescriptionText?.FR || item.texts?.propertyDescription1?.FR || ''),
+              images: Object.values(item.images?.external || {}).filter(img => img.url).map(img => ({ url: img.url })),
+              coordinates: (item.latitude && item.longitude) ? { lat: parseFloat(item.latitude), lng: parseFloat(item.longitude) } : undefined,
+              features: {
+                maxGuests: item.roomIds ? Math.max(...Object.values(item.roomIds).map(r => parseInt(r.maxPeople || '0'))) : 1,
+                surface: '',
+                bedConfiguration: '',
+              },
+              pricing: {
+                basePrice: item.roomIds ? Object.values(item.roomIds)[0]?.rackRate || '' : '',
+              },
+              // Add more fields as needed
+            };
+          });
+          console.log(realProperties);
+        setProperties(realProperties);
+      } catch (err) {
+        setError('Erreur lors du chargement des propriétés');
+        setProperties([]);
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchProperties();
   }, []);
 
+  // On retire le filtre automatique pour laisser le bouton Chercher déclencher la recherche
   useEffect(() => {
-    applyFilters();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [properties, dateArrivee, dateDepart, nuits, adultes, enfants]);
+    setFilteredProperties(properties);
+  }, [properties]);
 
   // Calcul automatique du nombre de nuits
   useEffect(() => {
@@ -64,34 +105,59 @@ export default function Reservations() {
     }
   }, [dateArrivee, dateDepart]);
 
-  const loadProperties = async () => {
+  // Remove loadProperties, not needed
+
+
+  // Nouvelle logique de recherche de disponibilité
+  const handleSearch = async () => {
+    setLoading(true);
+    setError('');
     try {
-      setLoading(true);
-      setTimeout(() => {
-        setProperties(mockProperties);
-        setLoading(false);
-      }, 1000);
+      // Formatage des dates pour l'API (yyyyMMdd)
+      const formatDate = (dateStr) => {
+        if (!dateStr) return '';
+        return dateStr.replace(/-/g, '');
+      };
+      const checkIn = formatDate(dateArrivee);
+      const checkOut = formatDate(dateDepart);
+
+      // On suppose que chaque propriété a un propId (adapter si besoin)
+      // On va chercher la disponibilité pour chaque propriété
+      const availablePropIds = [];
+      for (const property of properties) {
+        try {
+          const res = await axios.get('/api/public/availability', {
+            params: {
+              propId: property.id,
+              checkIn,
+              checkOut,
+              numAdult: adultes,
+              numChild: enfants
+            }
+          });
+          const availRes = res.data;
+          // Si la réponse contient des chambres disponibles, on garde la propriété
+          // (On suppose que roomsavail > 0 pour au moins une roomId)
+          const roomKeys = Object.keys(availRes).filter(k => !isNaN(Number(k)));
+          const hasAvailableRoom = roomKeys.some(roomId => {
+            const room = availRes[roomId];
+            return room && room.roomsavail > 0;
+          });
+          if (hasAvailableRoom) {
+            availablePropIds.push(property.id);
+          }
+        } catch {
+          // Ignore errors for individual properties
+        }
+      }
+      const filtered = properties.filter(p => availablePropIds.includes(p.id));
+      setFilteredProperties(filtered);
     } catch (err) {
-      setError('Erreur lors du chargement des propriétés');
+      setError('Erreur lors de la recherche de disponibilités');
       console.error(err);
+    } finally {
       setLoading(false);
     }
-  };
-
-  const applyFilters = () => {
-    let filtered = properties;
-
-    // Filtre par capacité (adultes + enfants)
-    const totalPersonnes = adultes + enfants;
-    if (totalPersonnes > 0) {
-      filtered = filtered.filter(property => 
-        property.features.maxGuests >= totalPersonnes
-      );
-    }
-
-    // TODO: Ajouter ici les filtres de disponibilité par dates une fois l'API connectée
-    
-    setFilteredProperties(filtered);
   };
 
   const handleViewDetails = (property) => {
@@ -109,16 +175,7 @@ export default function Reservations() {
     );
   };
 
-  const handleSearch = () => {
-    // La recherche se fait automatiquement via les useEffect
-    console.log('Recherche avec les critères:', {
-      dateArrivee,
-      dateDepart,
-      nuits,
-      adultes,
-      enfants
-    });
-  };
+
 
   if (error) {
     return (
@@ -126,7 +183,7 @@ export default function Reservations() {
         <Alert variant="danger" className="text-center">
           <h5>Erreur</h5>
           <p>{error}</p>
-          <Button variant="outline-danger" onClick={loadProperties}>
+          <Button variant="outline-danger" onClick={() => window.location.reload()}>
             Réessayer
           </Button>
         </Alert>

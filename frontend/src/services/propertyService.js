@@ -5,6 +5,40 @@ import { mockProperties, generateMockCalendarData } from '../data/mockData';
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api';
 
 class PropertyService {
+  /**
+   * Get availabilities for properties using Beds24 API
+   * @param {Object} params - { propId, checkIn, checkOut, numAdult, numChild }
+   * @returns {Promise<Object>} API response
+   */
+  async getAvailabilities({ propId, checkIn, checkOut, numAdult = 1, numChild = 0 }) {
+    try {
+      const searchParams = new URLSearchParams();
+      if (propId) searchParams.append('propId', propId);
+      if (checkIn) searchParams.append('checkIn', checkIn);
+      if (checkOut) searchParams.append('checkOut', checkOut);
+      if (numAdult) searchParams.append('numAdult', numAdult);
+      if (numChild) searchParams.append('numChild', numChild);
+
+      const response = await axios.get(`${API_BASE_URL}/public/availability?${searchParams.toString()}`);
+      return response.data;
+    } catch (error) {
+      console.error('Erreur lors de la récupération des disponibilités :', error);
+      throw new Error(error.response?.data?.error || 'Erreur lors de la récupération des disponibilités');
+    }
+  }
+
+  async getAllProperties() {
+    try {
+      const response = await axios.get(`${API_BASE_URL}/public/registered-properties/details`);
+      return response.data;
+    } catch (error) {
+      console.error('Erreur lors de la récupération des propriétés :', error);
+      throw new Error(error.response?.data?.error || 'Erreur lors de la récupération des propriétés');
+    }
+  }
+
+
+
   async getPublicProperties() {
     try {
 
@@ -79,19 +113,26 @@ class PropertyService {
 
   async getProperties() {
     try {
-      const token = localStorage.getItem('authToken');
-      const response = await axios.get(`${API_BASE_URL}/properties`, {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
+      const response = await axios.get(`${API_BASE_URL}/public/properties`, {
       });
-      return response.data;
+      return response.data.getProperties || [];
     } catch (error) {
       console.error('Erreur lors de la récupération des propriétés:', error);
       const message = error.response?.data?.error || 'Erreur lors de la récupération';
       throw new Error(message);
     }
   }
+
+  async getPropertyContent(propKey) {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/property/${propKey}`);
+    return response.data;
+  } catch (error) {
+    console.error('Erreur lors de la récupération du contenu de la propriété :', error);
+    throw new Error(error.response?.data?.error || 'Erreur lors de la récupération du contenu de la propriété');
+  }
+}
+
 
   async getProperty(id) {
     try {
