@@ -10,7 +10,6 @@ class KeyService {
     });
   }
 
-  // Helper pour ajouter le token dans les headers
   getAuthHeaders() {
     const token = authService.getToken();
     if (!token) throw new Error('User is not authenticated');
@@ -19,10 +18,9 @@ class KeyService {
     };
   }
 
-  // Récupérer le propKey d'une propriété (public, no auth)
   async getPropKey(propId) {
     try {
-      const response = await this.api.get(`/${propId}`); // No auth header for public access
+      const response = await this.api.get(`/${propId}`);
       return response.data;
     } catch (error) {
       console.error(`Error fetching propKey for propId ${propId}:`, error);
@@ -30,7 +28,6 @@ class KeyService {
     }
   }
 
-  // Définir ou mettre à jour le propKey d'une propriété
   async setPropKey(propId, propKey) {
     try {
       const response = await this.api.post(

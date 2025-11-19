@@ -49,8 +49,6 @@ export default function Reservations() {
   const [error, setError] = useState("");
   const [selectedProperty, setSelectedProperty] = useState(null);
   const [showDetailModal, setShowDetailModal] = useState(false);
-
-  // Nouveaux filtres de réservation
   const [dateArrivee, setDateArrivee] = useState("");
   const [dateDepart, setDateDepart] = useState("");
   const [nuits, setNuits] = useState(1);
@@ -66,9 +64,7 @@ export default function Reservations() {
       setLoading(true);
       setError("");
       try {
-        // 1. Get the list of properties (basic info)
         const res = await propertyService.getProperties();
-        // 2. For each property, get propKey and then property content
         const propertyDetails = await Promise.all(
           res.map(async (item) => {
             let propKey = null;
@@ -148,12 +144,10 @@ export default function Reservations() {
     fetchProperties();
   }, []);
 
-  // On retire le filtre automatique pour laisser le bouton Chercher déclencher la recherche
   useEffect(() => {
     setFilteredProperties(properties);
   }, [properties]);
 
-  // Calcul automatique du nombre de nuits
   useEffect(() => {
     if (dateArrivee && dateDepart) {
       const arrivee = new Date(dateArrivee);
@@ -166,23 +160,16 @@ export default function Reservations() {
     }
   }, [dateArrivee, dateDepart]);
 
-  // Remove loadProperties, not needed
-
-  // Nouvelle logique de recherche de disponibilité
   const handleSearch = async () => {
     setLoading(true);
     setError("");
     try {
-      // Formatage des dates pour l'API (yyyyMMdd)
       const formatDate = (dateStr) => {
         if (!dateStr) return "";
         return dateStr.replace(/-/g, "");
       };
       const checkIn = formatDate(dateArrivee);
       const checkOut = formatDate(dateDepart);
-
-      // On suppose que chaque propriété a un propId (adapter si besoin)
-      // On va chercher la disponibilité pour chaque propriété
       const availablePropIds = [];
       for (const property of properties) {
         try {
@@ -196,8 +183,6 @@ export default function Reservations() {
             },
           });
           const availRes = res.data;
-          // Si la réponse contient des chambres disponibles, on garde la propriété
-          // (On suppose que roomsavail > 0 pour au moins une roomId)
           const roomKeys = Object.keys(availRes).filter(
             (k) => !isNaN(Number(k))
           );
@@ -619,7 +604,7 @@ export default function Reservations() {
         </Row>
       </Container>
 
-      {/* Modal de détail - gardé 100% identique */}
+      {/* Modal de détail */}
       {selectedProperty && (
         <PropertyDetailModal
           show={showDetailModal}

@@ -3,13 +3,10 @@ import { Testimonial } from '../models/Testimonial.js';
 import emailService from '../services/emailService.js';
 import { uploadMultiple, cleanupFiles } from '../middlewares/uploadMiddleware.js';
 import { Beds24Service } from '../services/beds24Service.js';
-import { PropertyKeysService } from '../services/propertyKeysService.js';
 const beds24Service = new Beds24Service();
-const { getProperties, getAvailabilities, getPropertyContent } = beds24Service;
 
 const router = Router();
 
-// Middleware pour gérer les erreurs d'upload
 const handleUploadError = (err, req, res, next) => {
   if (err) {
     console.error('Erreur d\'upload:', err);
@@ -30,10 +27,8 @@ const handleUploadError = (err, req, res, next) => {
   next();
 };
 
-// Get details for all registered properties (propertyContent)
 router.get('/registered-properties/details', async (req, res) => {
   try {
-    // Get all propertyKeys from the collection
     const keysSnapshot = await (await import('../config/firebaseConfig.js')).db.collection('propertiesKeys').get();
     const registered = [];
     keysSnapshot.forEach(doc => {
@@ -42,7 +37,6 @@ router.get('/registered-properties/details', async (req, res) => {
         registered.push({ propId: data.propId, propKey: data.propKey });
       }
     });
-    // Fetch property content for each
     const beds24Service = new (await import('../services/beds24Service.js')).Beds24Service();
     const details = [];
     for (const { propId, propKey } of registered) {
@@ -60,10 +54,8 @@ router.get('/registered-properties/details', async (req, res) => {
   }
 });
 
-// List all properties with a propertyKey (public)
 router.get('/registered-properties', async (req, res) => {
   try {
-    // Get all propertyKeys from the collection
     const keysSnapshot = await (await import('../config/firebaseConfig.js')).db.collection('propertiesKeys').get();
     const registered = [];
     keysSnapshot.forEach(doc => {
@@ -152,9 +144,7 @@ export const sendContactMessage = async (req, res) => {
       source 
     } = req.body;
 
-    // Validation des champs requis
     if (!name || !email || !message) {
-      // Si des fichiers ont été uploadés, les supprimer
       if (req.files) {
         cleanupFiles(req.files);
       }
@@ -163,7 +153,6 @@ export const sendContactMessage = async (req, res) => {
       });
     }
 
-    // Validation de l'email
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       if (req.files) {
@@ -206,10 +195,9 @@ export const sendContactMessage = async (req, res) => {
       status: 'new',
       userAgent: req.get('User-Agent') || 'Unknown',
       ip: req.ip || req.connection.remoteAddress,
-      attachments: req.files || [] // Ajouter les fichiers uploadés
+      attachments: req.files || []
     };
 
-    // Log du message reçu
     console.log('📧 Nouveau message de contact reçu:');
     console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
     console.log(`👤 De: ${contactData.name} (${contactData.email})`);
@@ -228,22 +216,14 @@ export const sendContactMessage = async (req, res) => {
     console.log(contactData.message);
     console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
 
-    // Envoi des emails avec pièces jointes
     try {
       await emailService.sendContactNotification(contactData);
       console.log('✅ Emails de notification envoyés avec succès');
-      
-      // Nettoyer les fichiers temporaires après l'envoi de l'email
       cleanupFiles(contactData.attachments);
     } catch (emailError) {
       console.error('❌ Erreur lors de l\'envoi des emails:', emailError.message);
-      // Nettoyer les fichiers même en cas d'erreur
       cleanupFiles(contactData.attachments);
-      // On continue même si l'email échoue pour ne pas bloquer l'utilisateur
     }
-    
-    // TODO: Sauvegarder en base de données si nécessaire
-    // await ContactMessage.create(contactData);
 
     res.json({
       success: true,
@@ -253,7 +233,6 @@ export const sendContactMessage = async (req, res) => {
 
   } catch (error) {
     console.error('❌ Erreur lors du traitement du contact:', error);
-    // Nettoyer les fichiers en cas d'erreur
     if (req.files) {
       cleanupFiles(req.files);
     }

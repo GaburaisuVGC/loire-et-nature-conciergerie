@@ -73,69 +73,6 @@ export class Beds24Service {
     }
   }
 
-  async getRates(propKey, options = {}) {
-    try {
-      const { start, end } = options;
-      
-      const requestData = {
-        authentication: {
-          apiKey: getApiKey(),
-          propKey: propKey,
-        },
-      };
-
-      if (start) requestData.start = start;
-      if (end) requestData.end = end;
-
-      const response = await beds24ApiClient.post('/getRates', requestData);
-      return response.data;
-    } catch (error) {
-      console.error('Error fetching rates from Beds24:', error.response ? error.response.data : error.message);
-      throw new Error('Failed to fetch rates from Beds24.');
-    }
-  }
-
-  async getBookings(propKey, options = {}) {
-    try {
-      const { start, end, status } = options;
-      
-      const requestData = {
-        authentication: {
-          apiKey: getApiKey(),
-          propKey: propKey,
-        },
-      };
-
-      if (start) requestData.start = start;
-      if (end) requestData.end = end;
-      if (status) requestData.status = status;
-
-      const response = await beds24ApiClient.post('/getBookings', requestData);
-      return response.data;
-    } catch (error) {
-      console.error('Error fetching bookings from Beds24:', error.response ? error.response.data : error.message);
-      throw new Error('Failed to fetch bookings from Beds24.');
-    }
-  }
-
-  async createBooking(propKey, bookingData) {
-    try {
-      const requestData = {
-        authentication: {
-          apiKey: getApiKey(),
-          propKey: propKey,
-        },
-        ...bookingData,
-      };
-
-      const response = await beds24ApiClient.post('/setBooking', requestData);
-      return response.data;
-    } catch (error) {
-      console.error('Error creating booking in Beds24:', error.response ? error.response.data : error.message);
-      throw new Error('Failed to create booking in Beds24.');
-    }
-  }
-
   async getAvailabilities(params = {}) {
     try {
       const today = new Date();

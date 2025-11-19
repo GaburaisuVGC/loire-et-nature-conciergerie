@@ -22,7 +22,7 @@ export default function PropertyDetailModal({ show, onHide, property }) {
 
   if (!property) return null;
 
-  // Extract images from new API structure
+  // Extract images from API structure
   let images = [];
   if (property.images && property.images.external) {
     images = Object.values(property.images.external)

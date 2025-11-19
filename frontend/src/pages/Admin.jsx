@@ -53,7 +53,7 @@ export default function Admin() {
     try {
       const data = await propertyService.getProperties();
 
-      // récupérer les propKeys
+      // fetch propKey for each property
       const propertiesWithKeys = await Promise.all(
         data.map(async (p) => {
           try {

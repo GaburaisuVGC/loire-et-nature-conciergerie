@@ -2,7 +2,6 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import authRoutes from './routes/authRoutes.js';
-import propertyRoutes from './routes/propertyRoutes.js';
 import publicRoutes from './routes/publicRoutes.js';
 import testimonialRoutes from './routes/testimonialRoutes.js';
 import keyRoutes from './routes/keyRoutes.js';
@@ -23,7 +22,6 @@ app.use('/api/public', publicRoutes);
 app.use('/api/auth', authRoutes);
 
 // Protected routes (authentication required)
-app.use('/api/properties', isAdmin, propertyRoutes);
 app.use('/api/testimonials', isAdmin, testimonialRoutes);
 app.use('/api/keys', keyRoutes);
 
