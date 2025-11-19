@@ -125,7 +125,7 @@ class PropertyService {
 
   async getPropertyContent(propKey) {
   try {
-    const response = await axios.get(`${API_BASE_URL}/property/${propKey}`);
+    const response = await axios.get(`${API_BASE_URL}/public/property/${propKey}`);
     return response.data;
   } catch (error) {
     console.error('Erreur lors de la récupération du contenu de la propriété :', error);

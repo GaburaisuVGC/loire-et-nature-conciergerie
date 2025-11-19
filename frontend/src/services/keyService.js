@@ -19,13 +19,10 @@ class KeyService {
     };
   }
 
-  // Récupérer le propKey d'une propriété
+  // Récupérer le propKey d'une propriété (public, no auth)
   async getPropKey(propId) {
     try {
-      const response = await this.api.get(`/${propId}`, {
-        headers: this.getAuthHeaders(),
-      });
-      console.log(response.data);
+      const response = await this.api.get(`/${propId}`); // No auth header for public access
       return response.data;
     } catch (error) {
       console.error(`Error fetching propKey for propId ${propId}:`, error);

@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import { getPropKey, setPropKey } from '../controllers/keyController.js';
+import { isAdmin } from '../middlewares/authMiddleware.js';
 
 const router = Router();
 
@@ -58,6 +59,6 @@ router.get('/:propId', getPropKey);
  *       403:
  *         description: Forbidden (not an admin)
  */
-router.post('/', setPropKey);
+router.post('/', isAdmin, setPropKey);
 
 export default router;

@@ -25,7 +25,7 @@ app.use('/api/auth', authRoutes);
 // Protected routes (authentication required)
 app.use('/api/properties', isAdmin, propertyRoutes);
 app.use('/api/testimonials', isAdmin, testimonialRoutes);
-app.use('/api/keys', isAdmin, keyRoutes);
+app.use('/api/keys', keyRoutes);
 
 // Swagger setup
 import swaggerJSDoc from 'swagger-jsdoc';
