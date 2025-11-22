@@ -136,7 +136,11 @@ export function Header() {
                   ></i>
                 </div>
 
-                <Dropdown.Menu className="dropdown-menu-custom">
+                <Dropdown.Menu
+                  className="dropdown-menu-custom"
+                  onMouseEnter={() => setShowDropdown(true)}
+                  onMouseLeave={() => setShowDropdown(false)}
+                >
                   <Dropdown.Item 
                     as={Link} 
                     to="/reservations"
