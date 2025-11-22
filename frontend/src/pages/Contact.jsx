@@ -182,8 +182,8 @@ export default function Contact() {
                   </div>
                   <div className="d-flex align-items-center justify-content-center mb-3">
                     <i className="bi bi-envelope-fill text-vert me-2"></i>
-                    <a href="mailto:loire.et.nature.conciergerie@gmail.com" className="text-decoration-none text-dark">
-                      loire.et.nature.conciergerie@gmail.com
+                    <a href="mailto:loireetnatureconciergerie@gmail.com" className="text-decoration-none text-dark">
+                      loireetnatureconciergerie@gmail.com
                     </a>
                   </div>
                 </div>

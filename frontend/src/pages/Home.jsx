@@ -26,18 +26,18 @@ export default function Home() {
     }
   };
 
-    const renderStars = (rating, interactive = false, size = '1.5rem') => {
+  const renderStars = (rating, interactive = false, size = "1.5rem") => {
     return (
-      <div className="d-flex" style={{ gap: '5px' }}>
+      <div className="d-flex" style={{ gap: "5px" }}>
         {[1, 2, 3, 4, 5].map((star) => (
           <i
             key={star}
             className={`bi ${star <= rating ? "bi-star-fill" : "bi-star"}`}
             style={{
               fontSize: size,
-              color: 'var(--beige-terre)',
-              cursor: interactive ? 'pointer' : 'default',
-              transition: 'all 0.2s'
+              color: "var(--beige-terre)",
+              cursor: interactive ? "pointer" : "default",
+              transition: "all 0.2s",
             }}
           />
         ))}
@@ -118,7 +118,7 @@ export default function Home() {
             </p>
             <p className="fs-5 mt-4">
               <strong>
-                Soyez serein ! nous prenons soin de votre logement et de vos
+                Soyez serein ! Nous prenons soin de votre logement et de vos
                 hôtes.
               </strong>
             </p>
@@ -219,10 +219,8 @@ export default function Home() {
                   Une conciergerie engagée pour un tourisme durable
                 </p>
                 <ul>
-                  <li>
-                    Choix de produits d'entretien respectueux, partenariats
-                    locaux
-                  </li>
+                  <li>Choix de produits d'entretien respectueux</li>
+                  <li>Choix de partenariats locaux</li>
                 </ul>
               </div>
             </Col>

@@ -24,9 +24,9 @@ export function Footer() {
               <i className="bi bi-telephone-fill"></i>
               07 43 53 53 31
             </a>
-            <a href="mailto:loire.et.nature.conciergerie@gmail.com">
+            <a href="mailto:loireetnatureconciergerie@gmail.com">
               <i className="bi bi-envelope-fill"></i>
-              loire.et.nature.conciergerie@gmail.com
+              loireetnatureconciergerie@gmail.com
             </a>
           </div>
 

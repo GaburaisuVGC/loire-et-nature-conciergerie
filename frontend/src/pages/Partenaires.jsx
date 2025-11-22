@@ -252,7 +252,7 @@ export default function Partenaires() {
         <section className="py-5">
           <div className="section-title">
             <h2 className="font-garamond text-vert" style={{ fontWeight: 'bold', fontStyle: 'italic' }}>
-              Formulaire de contact
+              Rejoignez-nous !
             </h2>
           </div>
 

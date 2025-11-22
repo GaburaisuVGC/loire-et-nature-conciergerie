@@ -33,7 +33,7 @@ export default function NotreDemarche() {
       <section className="py-5">
         <Container>
           <div className="section-title">
-            <h2>Notre engagement</h2>
+            <h2>Notre démarche</h2>
           </div>
 
           <Row className="justify-content-center">

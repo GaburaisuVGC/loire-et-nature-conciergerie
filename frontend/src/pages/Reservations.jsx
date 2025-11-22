@@ -267,10 +267,10 @@ export default function Reservations() {
       </section>
 
       <Container className="py-5">
-        {/* Notre engagement */}
+        {/* Nos logements */}
         <section className="py-5">
           <div className="section-title">
-            <h2>Notre engagement</h2>
+            <h2>Nos logements</h2>
           </div>
 
           <Row className="justify-content-center">
