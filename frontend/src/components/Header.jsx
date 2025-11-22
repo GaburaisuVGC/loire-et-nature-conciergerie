@@ -105,9 +105,11 @@ export function Header() {
               </Nav.Link>
               
               {/* Dropdown Réservations */}
-              <Dropdown 
-                show={showDropdown} 
-                onToggle={setShowDropdown}
+              <Dropdown
+                show={showDropdown}
+                onToggle={(nextShow) => setShowDropdown(nextShow)}
+                onMouseEnter={() => setShowDropdown(true)}
+                onMouseLeave={() => setShowDropdown(false)}
                 className="nav-dropdown"
               >
                 <div className={`nav-link-dropdown ${isReservationActive() ? "active" : ""}`}>

@@ -168,12 +168,12 @@ export default function Proprietaires() {
   const offres = [
     {
       title: "Formule 100% tranquilité",
-      commission: "24% HT de commission hors frais de ménage à la charge des voyageurs",
+      commission: "Commission hors frais de ménage à la charge des voyageurs",
       description: "Idéale pour les propriétaires qui souhaitent une gestion 100% déléguée et rentabilité en main."
     },
     {
       title: "Formule Essentielle & Locale", 
-      commission: "15% HT de commission hors frais de ménage",
+      commission: "Commission hors frais de ménage",
       description: "Idéale pour propriétaires qui souhaitent garder un rôle actif tout en profitant de notre savoir-faire."
     }
   ];

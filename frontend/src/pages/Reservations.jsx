@@ -91,7 +91,7 @@ export default function Reservations() {
               id: item.propId,
               propKey,
               name: content?.name || item.name,
-              address: content?.address || item.address || "",
+              address: content?.city || item.city || "",
               description:
                 content?.texts?.propertyDescriptionText?.FR ||
                 content?.texts?.propertyDescription1?.FR ||

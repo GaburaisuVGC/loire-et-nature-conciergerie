@@ -3,12 +3,12 @@ import { Link } from "react-router-dom";
 
 export default function NotreDemarche() {
 
-  const metrics = [
-    { value: "15", label: "Logements" },
-    { value: "890", label: "Nuits réservées" },
-    { value: "92%", label: "Taux d'occupation" },
-    { value: "4.8/5", label: "Satisfaction client" }
-  ];
+  // const metrics = [
+  //   { value: "15", label: "Logements" },
+  //   { value: "890", label: "Nuits réservées" },
+  //   { value: "92%", label: "Taux d'occupation" },
+  //   { value: "4.8/5", label: "Satisfaction client" }
+  // ];
 
   return (
     <>
@@ -63,7 +63,7 @@ export default function NotreDemarche() {
         </Container>
       </section>
 
-      <section className="py-5 bg-rose-pale">
+      {/* <section className="py-5 bg-rose-pale">
         <Container>
           <Row className="metrics-container">
             {metrics.map((metric, index) => (
@@ -83,7 +83,7 @@ export default function NotreDemarche() {
             ))}
           </Row>
         </Container>
-      </section>
+      </section> */}
 
       <section className="py-5">
         <Container>
