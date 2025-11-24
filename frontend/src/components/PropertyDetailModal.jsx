@@ -257,7 +257,7 @@ export default function PropertyDetailModal({ show, onHide, property }) {
                   rel="noopener noreferrer"
                 >
                   <i className="bi bi-calendar-check me-2"></i>
-                  Réserver sur Beds24
+                  Réserver
                 </Button>
               </div>
             </Col>
