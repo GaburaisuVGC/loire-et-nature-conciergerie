@@ -47,10 +47,10 @@ export default function MentionsLegales() {
                 00050 R.C.S. Orléans
               </p>
               <p>
-                <strong>Code APE</strong> 9499Z
+                <strong>Bénéficiaire d'un CAPE</strong> (terme au 30/04/2026)
               </p>
               <p>
-                <strong>Date d'immatriculation</strong> Sous CAPE
+                <strong>Code APE</strong> 9499Z
               </p>
               <p>
                 <strong>Dénomination ou raison sociale</strong> : PES45 / Loire & Nature Conciergerie
@@ -67,8 +67,7 @@ export default function MentionsLegales() {
                 21)
               </p>
               <p>
-                <strong>Adresse du siège</strong> : 31 rue du Haut Thibert 45470
-                REBRECHIEN
+                <strong>Adresse du siège</strong> : 6 rue des Montées - 45100 ORLEANS
               </p>
               <p>
                 <strong>Téléphone</strong> : 07 43 53 53 31
@@ -107,9 +106,9 @@ export default function MentionsLegales() {
               </h2>
 
               <p>
-                <strong>Adresse de l'établissement</strong> : 31 rue du Haut
-                Thibert 45470 REBRECHIEN
+                <strong>Adresse de l'établissement</strong> : 6 rue des Montées - 45100 ORLEANS
               </p>
+              <p><strong>Site internet</strong> : <a href="https://www.pes45.org/">https://www.pes45.org/</a></p>
               <p>
                 <strong>Nom commercial</strong> : Loire&Nature Conciergerie
               </p>

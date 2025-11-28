@@ -295,7 +295,7 @@ export default function Proprietaires() {
         <section className="py-5">
           <div className="section-title">
             <h2 className="font-garamond text-vert" style={{ fontWeight: 'bold', fontStyle: 'italic' }}>
-              Je confie mon bien à Loire & Nature Conciergerie
+              Devis sur Demande, (1er rendez-vous pour une estimation offerte)
             </h2>
           </div>
 

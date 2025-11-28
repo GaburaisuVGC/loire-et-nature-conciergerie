@@ -45,7 +45,7 @@ export default function NotreDemarche() {
                 </p>
                 <p className="mb-4">
                   Nous proposons un service clés en main aux propriétaires afin de faciliter et optimiser 
-                  la gestion locative des logements en location de courte durée type Airbnb, booking...
+                  la gestion locative des logements en location de courte durée type Airbnb, Booking...
                 </p>
                 <p className="mb-5">
                   Nous intervenons sur l'agglomération Orléanaise et des communes environnantes 
