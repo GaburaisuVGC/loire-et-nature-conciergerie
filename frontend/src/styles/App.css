@@ -366,6 +366,7 @@ body {
   font-size: clamp(2rem, 4vw, 3rem);
   margin-bottom: 10px;
   display: inline-block;
+  width: 50%;
 }
 
 .hero-content .subtitle-main {
@@ -767,6 +768,7 @@ body {
   .hero-content .subtitle-italic {
     white-space: normal;
     font-size: 2rem;
+    width: 100%;
   }
   .hero-content .subtitle-main {
     font-size: 1.4rem;
@@ -838,6 +840,7 @@ body {
 @media (max-width: 576px) {
   .hero-content .subtitle-italic {
     font-size: 1.8rem; 
+    width: 100%;
   }
   .hero-content .subtitle-main {
     font-size: 1.2rem;

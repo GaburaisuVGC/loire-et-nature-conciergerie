@@ -75,9 +75,9 @@ export default function Home() {
         <div className="hero-overlay"></div>
         <Container>
           <div className="hero-content">
-            <p className="subtitle-italic">
+            <h1 className="subtitle-italic">
               Conciergerie locale & engagée au cœur du Val de Loire,
-            </p>
+            </h1>
             <p className="subtitle-main">pour des séjours immersifs</p>
             <p>
               Experts de la gestion de location courte durée pour les séjours
