@@ -260,7 +260,7 @@ export default function Reservations() {
               className="font-garamond text-vert hero-title"
               style={{ fontStyle: "italic" }}
             >
-              Les Logements avec Loire & Nature Conciergerie
+              Les Logements avec Loire et Nature Conciergerie
             </h1>
           </div>
         </Container>
@@ -280,7 +280,7 @@ export default function Reservations() {
                   className="mb-4"
                   style={{ fontSize: "1.1rem", lineHeight: "1.8" }}
                 >
-                  <strong>Loire & Nature</strong>, c'est un projet de cœur, né
+                  <strong>Loire et Nature</strong>, c'est un projet de cœur, né
                   d'une volonté d'associer gestion locative et faire découvrir
                   aux voyageurs des produits de fabrication artisanale de la
                   région.

@@ -7,7 +7,7 @@ function HydrateFallback() {
         <div className="spinner-border text-primary" role="status">
           <span className="visually-hidden">Chargement...</span>
         </div>
-        <p className="mt-3">Chargement de Loire & Nature Conciergerie...</p>
+        <p className="mt-3">Chargement de Loire et Nature Conciergerie...</p>
       </div>
     </div>
   );

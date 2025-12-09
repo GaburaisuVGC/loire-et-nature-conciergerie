@@ -98,7 +98,7 @@ export default function Home() {
 
           <div className="text-center mb-4">
             <p className="fs-5">
-              Bienvenue chez <strong>Loire & Nature</strong>, une conciergerie
+              Bienvenue chez <strong>Loire et Nature</strong>, une conciergerie
               indépendante, chaleureuse et responsable.
             </p>
             <p>
@@ -228,7 +228,7 @@ export default function Home() {
 
           <div className="text-center mt-5">
             <p className="fs-5" style={{ maxWidth: "900px", margin: "0 auto" }}>
-              Chez Loire & Nature, nous croyons en une conciergerie locale,
+              Chez Loire et Nature, nous croyons en une conciergerie locale,
               humaine et responsable,
               <br />
               qui allie sérénité, exigence et authenticité.

@@ -182,7 +182,7 @@ export default function Partenaires() {
             <Col lg={10}>
               <div className="partenaires-content">
                 <p className="mb-4" style={{ fontSize: '1.1rem', lineHeight: '1.8' }}>
-                  Chez Loire & Nature, nous croyons que la réussite d'un séjour passe aussi par les rencontres et les
+                  Chez Loire et Nature, nous croyons que la réussite d'un séjour passe aussi par les rencontres et les
                   découvertes locales.
                 </p>
                 
@@ -240,7 +240,7 @@ export default function Partenaires() {
                 </p>
 
                 <p className="mb-5" style={{ fontSize: '1.1rem', lineHeight: '1.8', fontWeight: '500' }}>
-                  En rejoignant Loire & Nature, vous devenez bien plus qu'un prestataire : 
+                  En rejoignant Loire et Nature, vous devenez bien plus qu'un prestataire : 
                   vous devenez un acteur clé de l'expérience voyageur.
                 </p>
               </div>

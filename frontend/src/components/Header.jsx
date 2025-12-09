@@ -25,12 +25,12 @@ export function Header() {
               <Link to="/" className="logo-container">
                 <img 
                   src="/logo.png" 
-                  alt="Loire & Nature Conciergerie" 
+                  alt="Loire et Nature Conciergerie" 
                   className="logo"
                   onError={(e) => {
                     e.target.onerror = null;
                     e.target.style.display = 'none';
-                    e.target.parentElement.innerHTML = '<span class="font-garamond text-vert">Loire & Nature</span>';
+                    e.target.parentElement.innerHTML = '<span class="font-garamond text-vert">Loire et Nature</span>';
                   }}
                 />
               </Link>
@@ -58,7 +58,7 @@ export function Header() {
           <Link to="/" className="navbar-brand mx-auto d-md-none">
             <img 
               src="/logo.png" 
-              alt="Loire & Nature Conciergerie" 
+              alt="Loire et Nature Conciergerie" 
               onError={(e) => { e.target.onerror = null; e.target.style.display = 'none'; }}
             />
           </Link>

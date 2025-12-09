@@ -10,7 +10,7 @@ export function Footer() {
           <Link to="/">
             <img 
               src="/logo.png" 
-              alt="Loire & Nature Conciergerie" 
+              alt="Loire et Nature Conciergerie" 
               className="footer-logo"
               onError={(e) => {
                 e.target.onerror = null;

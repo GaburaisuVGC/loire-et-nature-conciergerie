@@ -216,7 +216,7 @@ export default function Temoignages() {
                       value={formData.comment}
                       onChange={handleInputChange}
                       required
-                      placeholder="Partagez votre expérience avec Loire & Nature..."
+                      placeholder="Partagez votre expérience avec Loire et Nature..."
                     />
                     <Form.Text className="text-muted">
                       Minimum 10 caractères

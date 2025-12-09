@@ -40,7 +40,7 @@ export default function NotreDemarche() {
             <Col lg={10}>
               <div className="engagement-content">
                 <p className="mb-4">
-                  <strong>Loire & Nature</strong>, c'est un projet de cœur, né d'une volonté d'associer gestion locative et faire 
+                  <strong>Loire et Nature</strong>, c'est un projet de cœur, né d'une volonté d'associer gestion locative et faire 
                   découvrir aux voyageurs des produits de fabrication artisanale de la région.
                 </p>
                 <p className="mb-4">
@@ -91,7 +91,7 @@ export default function NotreDemarche() {
             <Col lg={10}>
               <div className="gladys-content">
                 <p className="mb-4">
-                  Je suis <strong>Gladys</strong> et j'ai créé Loire & Nature Conciergerie en 2024 pour relier mes passions et savoir faire :
+                  Je suis <strong>Gladys</strong> et j'ai créé Loire et Nature Conciergerie en 2024 pour relier mes passions et savoir faire :
                 </p>
                 <p className="mb-4">
                   L'organisation, l'accueil, l'aménagement et le souhait de devenir actrice dans la valorisation du territoire...
