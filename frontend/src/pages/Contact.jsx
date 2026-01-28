@@ -188,16 +188,10 @@ export default function Contact() {
                   </div>
                 </div>
                 <div className="d-flex justify-content-center gap-3">
-                  <a href="https://www.facebook.com" target="_blank" rel="noopener noreferrer" className="text-vert">
+                  <a href="https://www.facebook.com/people/Loire-Nature-Concierge/61585859160551/" target="_blank" rel="noopener noreferrer" className="text-vert">
                     <i className="bi bi-facebook" style={{ fontSize: '1.2rem' }}></i>
                   </a>
-                  <a href="https://www.google.com" target="_blank" rel="noopener noreferrer" className="text-vert">
-                    <i className="bi bi-google" style={{ fontSize: '1.2rem' }}></i>
-                  </a>
-                  <a href="https://www.linkedin.com" target="_blank" rel="noopener noreferrer" className="text-vert">
-                    <i className="bi bi-linkedin" style={{ fontSize: '1.2rem' }}></i>
-                  </a>
-                  <a href="https://www.instagram.com" target="_blank" rel="noopener noreferrer" className="text-vert">
+                  <a href="https://www.instagram.com/loire_et_nature_conciergerie/" target="_blank" rel="noopener noreferrer" className="text-vert">
                     <i className="bi bi-instagram" style={{ fontSize: '1.2rem' }}></i>
                   </a>
                 </div>

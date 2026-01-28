@@ -36,16 +36,10 @@ export function Header() {
               </Link>
             </div>
             <div className="col-md-4 d-flex social-icons justify-content-end">
-              <a href="https://www.facebook.com" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
+              <a href="https://www.facebook.com/people/Loire-Nature-Concierge/61585859160551/" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
                 <i className="bi bi-facebook"></i>
               </a>
-              <a href="https://www.google.com" target="_blank" rel="noopener noreferrer" aria-label="Google">
-                <i className="bi bi-google"></i>
-              </a>
-              <a href="https://www.linkedin.com" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
-                <i className="bi bi-linkedin"></i>
-              </a>
-              <a href="https://www.instagram.com" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+              <a href="https://www.instagram.com/loire_et_nature_conciergerie/" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
                 <i className="bi bi-instagram"></i>
               </a>
             </div>
@@ -73,16 +67,10 @@ export function Header() {
                 </a>
               </div>
               <div className="nav-social-icons">
-                <a href="https://www.facebook.com" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
+                <a href="https://www.facebook.com/people/Loire-Nature-Concierge/61585859160551/" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
                   <i className="bi bi-facebook"></i>
                 </a>
-                <a href="https://www.google.com" target="_blank" rel="noopener noreferrer" aria-label="Google">
-                  <i className="bi bi-google"></i>
-                </a>
-                <a href="https://www.linkedin.com" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
-                  <i className="bi bi-linkedin"></i>
-                </a>
-                <a href="https://www.instagram.com" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+                <a href="https://www.instagram.com/loire_et_nature_conciergerie/" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
                   <i className="bi bi-instagram"></i>
                 </a>
               </div>
